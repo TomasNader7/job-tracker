@@ -2,7 +2,7 @@
 
 A Power BI dashboard over a job-search pipeline: funnel conversion, performance by resume variant, job type, priority and networking vs cold apply, and a weekly timeline. This repo ships **synthetic data only**, calibrated to the shape of a real tracker. The real tracker and its dashboard stay private.
 
-Status: Week A1 (data, model, measures). Report pages come in Week A2.
+Status: Week A1 (data, model, measures). The model is built and checked on the real data (private). Remaining A1 steps: add `+ 0` to the count measures so zero shows as 0, and run the PivotTable reconciliation. Report pages come in Week A2.
 
 ## Two datasets, one model
 
