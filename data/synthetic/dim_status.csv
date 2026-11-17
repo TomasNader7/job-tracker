@@ -1,0 +1,9 @@
+status_key,application_status,is_application,is_response,is_interview,is_offer,is_rejection,is_no_reply
+1,Not Started,0,0,0,0,0,0
+2,Applied,1,0,0,0,0,0
+3,No Reply,1,0,0,0,0,1
+4,Withdrawn,1,0,0,0,0,0
+5,Rejected,1,1,0,0,1,0
+6,Interview Scheduled,1,1,1,0,0,0
+7,Interviewed,1,1,1,0,0,0
+8,Accepted,1,1,1,1,0,0

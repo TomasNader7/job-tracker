@@ -1,0 +1,39 @@
+// Job Search Dashboard: DAX measures (Week A1)
+// Model: fact_application is the center; dim_status, dim_resume_variant, dim_job_type,
+// dim_priority join on their *_key columns; dim_date joins on date_key (applied date).
+// Flags live on dim_status (1/0) so every rate is the same two-line pattern.
+
+Applications =
+CALCULATE ( COUNTROWS ( fact_application ), dim_status[is_application] = 1 ) + 0
+
+Responses =
+CALCULATE ( COUNTROWS ( fact_application ), dim_status[is_response] = 1 ) + 0
+
+Interviews =
+CALCULATE ( COUNTROWS ( fact_application ), dim_status[is_interview] = 1 ) + 0
+
+Offers =
+CALCULATE ( COUNTROWS ( fact_application ), dim_status[is_offer] = 1 ) + 0
+
+Rejections =
+CALCULATE ( COUNTROWS ( fact_application ), dim_status[is_rejection] = 1 ) + 0
+
+No Replies =
+CALCULATE ( COUNTROWS ( fact_application ), dim_status[is_no_reply] = 1 ) + 0
+
+Response Rate = DIVIDE ( [Responses], [Applications] )
+Interview Rate = DIVIDE ( [Interviews], [Applications] )
+Offer Rate = DIVIDE ( [Offers], [Applications] )
+Rejection Rate = DIVIDE ( [Rejections], [Applications] )
+No-Reply Rate = DIVIDE ( [No Replies], [Applications] )
+
+// Days from applied date to interview date, only rows that have an interview date.
+Avg Days to Interview =
+AVERAGEX (
+    FILTER (
+        fact_application,
+        NOT ISBLANK ( fact_application[interview_date] )
+            && RELATED ( dim_status[is_application] ) = 1
+    ),
+    DATEDIFF ( fact_application[date_applied], fact_application[interview_date], DAY )
+)

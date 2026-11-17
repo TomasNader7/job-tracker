@@ -1,0 +1,11 @@
+# Real tracker data never goes in this repo
+*.xlsx
+*.xls
+data/real/
+.env
+__pycache__/
+*.pyc
+.venv/
+
+# Real-data Power BI reports (contain real company names)
+*_real.pbix
