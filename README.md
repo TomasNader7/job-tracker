@@ -4,6 +4,22 @@ A Power BI dashboard over a job-search pipeline: funnel conversion, performance 
 
 Status: Week A1 done (data, model, measures). All 12 cards match the recomputed values and the Excel PivotTable on the real data (private, 186 applications as of 2026-11-17). Report pages are Week A2.
 
+## Dashboard (synthetic data)
+
+Screenshots below come from the synthetic dataset. Company names are fabricated, and the shapes (including the weekly rate) are not meant to match any real results. All DAX is in `powerbi/measures.dax`.
+
+**Funnel**: applications, responses, interviews and offers, plus where every application stands.
+
+![Funnel page](docs/screenshots/funnel.png)
+
+**Performance**: response rate by resume variant, job type, priority and referral type (groups with 3+ applications only).
+
+![Performance page](docs/screenshots/performance.png)
+
+**Timeline**: applications per week and a rolling 4-week response rate (replies divided by applications over the 28 days ending each week). Recent weeks are understated because replies are still arriving, and the first weeks cover less than 4 weeks of data.
+
+![Timeline page](docs/screenshots/timeline.png)
+
 ## Two datasets, one model
 
 | | Synthetic (public) | Real (private) |

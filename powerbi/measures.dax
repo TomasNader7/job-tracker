@@ -37,3 +37,19 @@ AVERAGEX (
     ),
     DATEDIFF ( fact_application[date_applied], fact_application[interview_date], DAY )
 )
+
+
+// Timeline page. Lives on dim_date. For each week on the axis, response rate over the
+// 28 days ending that week's last day (applications applied in that window).
+// REMOVEFILTERS stops the one-week axis filter from shrinking the window to a single week.
+// Recent windows are understated (replies still arriving); the first weeks cover under 4 weeks of data.
+Rolling 4-Wk Response Rate =
+VAR EndDate = MAX ( dim_date[date] )
+VAR StartDate = EndDate - 27
+RETURN
+CALCULATE (
+    [Response Rate],
+    REMOVEFILTERS ( dim_date ),
+    dim_date[date] >= StartDate,
+    dim_date[date] <= EndDate
+)
