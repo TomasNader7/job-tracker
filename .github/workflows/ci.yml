@@ -1,0 +1,47 @@
+name: CI
+
+# Runs the whole test suite on every push to main and on every pull request.
+# Windows runner on purpose: the database tests use SQL Server LocalDB, which only exists on Windows.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      # The tests connect to (localdb)\MSSQLLocalDB. Make sure that instance exists and is running.
+      - name: Start LocalDB
+        shell: pwsh
+        run: |
+          sqllocaldb info
+          if ((sqllocaldb info) -notcontains 'MSSQLLocalDB') { sqllocaldb create MSSQLLocalDB }
+          sqllocaldb start MSSQLLocalDB
+          sqllocaldb info MSSQLLocalDB
+
+      - name: Restore
+        run: dotnet restore JobTracker.sln
+
+      - name: Build
+        run: dotnet build JobTracker.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test JobTracker.sln --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: "**/test-results.trx"
