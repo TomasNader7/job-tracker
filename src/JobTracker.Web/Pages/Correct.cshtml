@@ -1,0 +1,43 @@
+@page "{id:int}/{eventId:long}"
+@model CorrectModel
+@using JobTracker.Domain
+@using JobTracker.Web
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Correct entry";
+    var app = Model.View.Application;
+    var t = Model.Target;
+}
+
+<p><a asp-page="/Details" asp-route-id="@app.Id">&larr; @app.CompanyName</a></p>
+
+<h1 class="h3 mb-3">Correct an entry</h1>
+
+<div class="alert alert-secondary">
+    Entry being corrected:
+    <strong>@(t.PreviousStatus is { } p ? StatusDisplay.Label(p) : "start") &rarr; @StatusDisplay.Label(t.NewStatus)</strong>
+    on @t.EffectiveAt.ToString("yyyy-MM-dd").
+    <br />
+    <small>The old entry is kept in the history, shown struck out. Your correction replaces it.</small>
+</div>
+
+<form method="post" style="max-width: 480px">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="NewStatus" class="form-label">Correct status</label>
+        <select asp-for="NewStatus" class="form-select"
+                asp-items="@(Enum.GetValues<ApplicationStatus>().Select(s => new SelectListItem(StatusDisplay.Label(s), s.ToString())))"></select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="EffectiveDate" class="form-label">Correct date</label>
+        <input asp-for="EffectiveDate" type="date" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Note" class="form-label">What was wrong? (required)</label>
+        <input asp-for="Note" class="form-control" maxlength="1000" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save correction</button>
+    <a class="btn btn-link" asp-page="/Details" asp-route-id="@app.Id">Cancel</a>
+</form>

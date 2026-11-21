@@ -35,19 +35,35 @@
             <th>Change</th>
             <th>Note</th>
             <th>Recorded</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
     @foreach (var e in Model.View.Events)
     {
-        <tr>
-            <td>@e.EffectiveAt.ToString("yyyy-MM-dd")</td>
-            <td>
+        var replaced = Model.View.IsSuperseded(e);
+        <tr class="@(replaced ? "text-muted" : "")">
+            <td class="@(replaced ? "text-decoration-line-through" : "")">@e.EffectiveAt.ToString("yyyy-MM-dd")</td>
+            <td class="@(replaced ? "text-decoration-line-through" : "")">
                 @(e.PreviousStatus is { } p ? StatusDisplay.Label(p) : "start")
                 &rarr; @StatusDisplay.Label(e.NewStatus)
+                @if (e.Source == JobTracker.Domain.EventSource.Correction)
+                {
+                    <span class="badge text-bg-info">Correction</span>
+                }
             </td>
             <td>@e.Note</td>
             <td class="text-muted">@e.RecordedAt.ToString("yyyy-MM-dd HH:mm") UTC</td>
+            <td>
+                @if (replaced)
+                {
+                    <small>replaced</small>
+                }
+                else
+                {
+                    <a asp-page="/Correct" asp-route-id="@app.Id" asp-route-eventId="@e.Id">Correct</a>
+                }
+            </td>
         </tr>
     }
     </tbody>

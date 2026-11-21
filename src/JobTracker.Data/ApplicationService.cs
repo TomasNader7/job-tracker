@@ -7,7 +7,11 @@ namespace JobTracker.Data;
 public sealed record ApplicationView(
     Application Application,
     IReadOnlyList<StatusEvent> Events,
-    ProjectionResult Projection);
+    ProjectionResult Projection)
+{
+    /// <summary>True if a later correction has replaced this event. It stays in the history, shown struck out.</summary>
+    public bool IsSuperseded(StatusEvent e) => Events.Any(x => x.SupersedesEventId == e.Id);
+}
 
 public sealed record ChangeResult(bool Succeeded, string? Error)
 {
@@ -80,6 +84,44 @@ public sealed class ApplicationService(JobTrackerDbContext db, TimeProvider cloc
         var trial = StatusProjection.Project(existing.Append(candidate), clock.GetUtcNow());
         if (trial.Problems.Count > 0)
             return ChangeResult.Fail($"That date does not fit the history: {trial.Problems[0]}");
+
+        db.StatusEvents.Add(candidate);
+        db.SaveChanges();
+        return ChangeResult.Ok();
+    }
+
+    /// <summary>
+    /// Fixes a wrong entry by ADDING a correction row that replaces it. The wrong row is never edited or deleted.
+    /// </summary>
+    public ChangeResult CorrectEvent(int applicationId, long eventId, ApplicationStatus newStatus,
+        DateTimeOffset effectiveAt, string? note)
+    {
+        if (!db.Applications.Any(a => a.Id == applicationId))
+            return ChangeResult.Fail($"Application {applicationId} does not exist.");
+
+        var existing = LoadEvents(applicationId);
+        var target = existing.SingleOrDefault(e => e.Id == eventId);
+        if (target is null)
+            return ChangeResult.Fail($"Event {eventId} does not exist on this application.");
+
+        if (existing.Any(e => e.SupersedesEventId == eventId))
+            return ChangeResult.Fail("That event has already been corrected. Correct its latest version instead.");
+
+        if (string.IsNullOrWhiteSpace(note))
+            return ChangeResult.Fail("A correction needs a note explaining what was wrong.");
+
+        // The correction takes the wrong event's place, so it keeps that event's "came from" status.
+        var candidate = StatusEvent.Create(0, applicationId, target.PreviousStatus, newStatus, effectiveAt,
+            clock.GetUtcNow(), EventSource.Correction, supersedesEventId: eventId, note: note.Trim());
+
+        // Dry run. Refuse if the correction adds a problem. Problems that were already there do not
+        // block it, so a correction can repair a history that was broken before.
+        var now = clock.GetUtcNow();
+        var before = StatusProjection.Project(existing, now).Problems;
+        var after = StatusProjection.Project(existing.Append(candidate), now).Problems;
+        var newProblems = after.Except(before).ToList();
+        if (newProblems.Count > 0)
+            return ChangeResult.Fail($"That correction would break the history: {newProblems[0]}");
 
         db.StatusEvents.Add(candidate);
         db.SaveChanges();
