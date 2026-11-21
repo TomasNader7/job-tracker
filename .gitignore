@@ -16,3 +16,6 @@ obj/
 *.user
 .vs/
 TestResults/
+
+# Phase 3 snapshot exports (regenerated deterministically from the demo database)
+snapshots/
