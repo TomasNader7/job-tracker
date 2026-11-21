@@ -9,3 +9,10 @@ __pycache__/
 
 # Real-data Power BI reports (contain real company names)
 *_real.pbix
+
+# .NET build output
+bin/
+obj/
+*.user
+.vs/
+TestResults/
