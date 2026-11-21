@@ -1,10 +1,71 @@
-# Job Search Dashboard (Power BI)
+# Job Search Intelligence Platform
 
-A Power BI dashboard over a job-search pipeline: funnel conversion, performance by resume variant, job type, priority and networking vs cold apply, and a weekly timeline. This repo ships **synthetic data only**, calibrated to the shape of a real tracker. The real tracker and its dashboard stay private.
+[![CI](https://github.com/TomasNader7/job-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/TomasNader7/job-tracker/actions/workflows/ci.yml)
 
-Status: Week A1 done (data, model, measures). All 12 cards match the recomputed values and the Excel PivotTable on the real data (private, 186 applications as of 2026-11-17). Report pages are Week A2.
+A personal job-search tracker built in stages: a Power BI dashboard, a small local web app that records every status change as history, and (planned) a Databricks pipeline feeding the dashboard. This repo ships **synthetic data only**. The real tracker, its database and its dashboard stay private on one machine.
 
-## Dashboard (synthetic data)
+## Roadmap
+
+| Phase | What | Status |
+|---|---|---|
+| 0 | Power BI dashboard on a star schema (Funnel, Performance, Timeline pages) | Done |
+| 1 | Databricks Free Edition feasibility spike (synthetic data only) | Done, see [the spike note](docs/phase1-databricks-spike.md) |
+| 2 | ASP.NET Core app with an append-only status history | Feature-complete, tests run in CI |
+| 3 | First synthetic end-to-end slice: app to Databricks to Power BI | Planned |
+| 4 | Excel import and data-quality hardening | Planned |
+| 5 | Power BI integration and public release | Planned |
+
+The app runs **locally only**. It is not deployed anywhere.
+
+## The app (Phase 2)
+
+A small ASP.NET Core Razor Pages app on a local SQL Server (LocalDB) database. It lists applications, shows each one's history, and lets you add applications, change status and correct mistakes.
+
+### Design rules
+
+- **History is append-only.** A status change adds a row to `StatusEvents`. Rows are never edited or deleted. The current status is *projected* from the history, never stored.
+- **Mistakes are fixed by correction.** A correction is a new row that replaces the wrong one. It needs a note. The wrong row stays in the history, shown struck out.
+- **Status rules live in one place.** `StatusTransitions` defines the allowed moves. No step skipping (Applied cannot jump to Accepted). Withdrawn and Accepted are final. Rejected can only be reopened to Interview Scheduled.
+- **No Reply is derived, not stored.** An application is "No Reply" when its status is Applied and more than 30 days have passed. A late reply is just a normal status change.
+- **Bad history is reported, not hidden.** If a history is inconsistent, the projection stops at the last valid status and lists the problems. A change that would break the history is refused before it is saved.
+- **Database refuses orphans.** Every event must belong to a real application, and an application with history cannot be deleted.
+
+### Layout
+
+| Project | Role |
+|---|---|
+| `src/JobTracker.Domain` | The rules: statuses, transitions, events, projection. No database code |
+| `src/JobTracker.Data` | EF Core `DbContext`, migrations, `ApplicationService` (the one place screens call) |
+| `src/JobTracker.Web` | Razor Pages: list, add, detail with change-status, correct |
+| `tests/JobTracker.Tests` | xUnit tests (rules, database, service, pages) |
+
+### Run it
+
+Needs the .NET 9 SDK and SQL Server LocalDB (Windows).
+
+```
+dotnet tool restore
+dotnet ef database update --project src/JobTracker.Data    # creates the local JobTracker database
+dotnet run --project src/JobTracker.Web                    # http://localhost:5158
+```
+
+The database file lives in your Windows user folder, not in the repo. Anything you add is real data in that local file, so use made-up companies if you are only trying it out.
+
+### Test it
+
+```
+dotnet test
+```
+
+The database tests build throwaway databases (`JobTracker_Test*`) from the migrations and delete them afterward. They never touch the `JobTracker` database. GitHub Actions runs the same tests on every push, on a Windows runner because LocalDB is Windows-only.
+
+## Power BI dashboard (Phase 0)
+
+A Power BI dashboard over a job-search pipeline: funnel conversion, performance by resume variant, job type, priority and networking vs cold apply, and a weekly timeline. The numbers below come from **synthetic data**, calibrated to the shape of a real tracker.
+
+Status: complete. All 12 cards match the recomputed values and the Excel PivotTable on the real data (private, 186 applications as of 2026-11-17). Funnel, Performance and Timeline pages are done.
+
+### Dashboard (synthetic data)
 
 Screenshots below come from the synthetic dataset. Company names are fabricated, and the shapes (including the weekly rate) are not meant to match any real results. All DAX is in `powerbi/measures.dax`.
 
@@ -20,7 +81,7 @@ Screenshots below come from the synthetic dataset. Company names are fabricated,
 
 ![Timeline page](docs/screenshots/timeline.png)
 
-## Two datasets, one model
+### Two datasets, one model
 
 | | Synthetic (public) | Real (private) |
 |---|---|---|
@@ -43,7 +104,7 @@ python scripts/build_real.py --xlsx           # real data; needs the real tracke
 python scripts/verify_measures.py data/synthetic   # recomputes every measure from the CSVs; must print PASS
 ```
 
-## Data-prep rules (both datasets)
+### Data-prep rules (both datasets)
 
 - **No Reply:** the tracker keeps silent applications as "Applied". Applied for more than 30 days counts as "No Reply".
 - **Job type** (real data): derived from keywords in the job title, because the raw "Type of Job" column is inconsistent.
@@ -52,7 +113,7 @@ python scripts/verify_measures.py data/synthetic   # recomputes every measure fr
 - **Excluded:** rows that are outreach with no posting.
 - **Withdrawn:** counts as an application, with no response flag.
 
-## Build the model in Power BI Desktop
+### Build the model in Power BI Desktop
 
 1. Home > Get data > Text/CSV. Load all six CSVs from `data/synthetic/` (not `expected_measures.json` or the xlsx).
 2. In `fact_application`, set `date_applied` and `interview_date` to type **Date**; in `dim_date`, set `date` to Date.
@@ -67,7 +128,7 @@ python scripts/verify_measures.py data/synthetic   # recomputes every measure fr
 5. Paste each measure from `powerbi/measures.dax` (Modeling > New measure).
 6. Format the rate measures as percentage, Avg Days to Interview as one decimal.
 
-## Measure definitions
+### Measure definitions
 
 - **Applications**: rows whose status counts as submitted (everything except Not Started).
 - **Response**: any reply, including rejection (Rejected, Interview Scheduled, Interviewed, Accepted).
@@ -75,7 +136,7 @@ python scripts/verify_measures.py data/synthetic   # recomputes every measure fr
 - **No Reply**: status is "No Reply" (see the 30-day rule above).
 - Rates divide by Applications. Avg Days to Interview uses only rows with an interview date.
 
-## Reconciliation (expected values, synthetic data)
+### Reconciliation (expected values, synthetic data)
 
 Cards in Power BI (no slicers) must equal `data/synthetic/expected_measures.json` and the PivotTable on `tracker_flat.xlsx`:
 
@@ -91,3 +152,5 @@ PivotTable check: Rows = application_status, Values = count of application_id. T
 ## Privacy
 
 `.gitignore` blocks `*.xlsx` and `data/real/`. The real tracker holds company names, contact emails and LinkedIn links and is never committed. The synthetic files contain only fabricated names ("Company 001") and aggregate-level calibration.
+
+The app's database is a LocalDB file in the user's Windows folder, outside this repo, and its connection string has no credentials (Windows login). Only the migration recipe is committed, never data. Anything sent to Databricks Free Edition must be synthetic, because that tier may be used to train Databricks services.
