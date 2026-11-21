@@ -77,14 +77,18 @@ public sealed class ApplicationService(JobTrackerDbContext db, TimeProvider cloc
         if (effectiveAt < latest)
             return ChangeResult.Fail($"The date must be on or after {latest:yyyy-MM-dd}, the date of the latest event.");
 
-        var candidate = StatusEvent.Create(0, applicationId, current, newStatus, effectiveAt,
-            clock.GetUtcNow(), EventSource.Manual, note: string.IsNullOrWhiteSpace(note) ? null : note.Trim());
+        var cleanNote = string.IsNullOrWhiteSpace(note) ? null : note.Trim();
+        StatusEvent Build(long id) => StatusEvent.Create(id, applicationId, current, newStatus, effectiveAt,
+            clock.GetUtcNow(), EventSource.Manual, note: cleanNote);
 
         // Dry run: would the whole history still be consistent? This catches backdating that breaks the order.
-        var trial = StatusProjection.Project(existing.Append(candidate), clock.GetUtcNow());
+        // The trial copy gets an Id above every existing one, like the database will assign, so an event with
+        // the same timestamp as an older one sorts after it. The saved row keeps Id 0 (database generates it).
+        var trial = StatusProjection.Project(existing.Append(Build(NextEventId(existing))), clock.GetUtcNow());
         if (trial.Problems.Count > 0)
             return ChangeResult.Fail($"That date does not fit the history: {trial.Problems[0]}");
 
+        var candidate = Build(0);
         db.StatusEvents.Add(candidate);
         db.SaveChanges();
         return ChangeResult.Ok();
@@ -111,18 +115,20 @@ public sealed class ApplicationService(JobTrackerDbContext db, TimeProvider cloc
             return ChangeResult.Fail("A correction needs a note explaining what was wrong.");
 
         // The correction takes the wrong event's place, so it keeps that event's "came from" status.
-        var candidate = StatusEvent.Create(0, applicationId, target.PreviousStatus, newStatus, effectiveAt,
+        StatusEvent Build(long id) => StatusEvent.Create(id, applicationId, target.PreviousStatus, newStatus, effectiveAt,
             clock.GetUtcNow(), EventSource.Correction, supersedesEventId: eventId, note: note.Trim());
 
         // Dry run. Refuse if the correction adds a problem. Problems that were already there do not
         // block it, so a correction can repair a history that was broken before.
+        // The trial copy gets an Id above every existing one (see RecordStatusChange).
         var now = clock.GetUtcNow();
         var before = StatusProjection.Project(existing, now).Problems;
-        var after = StatusProjection.Project(existing.Append(candidate), now).Problems;
+        var after = StatusProjection.Project(existing.Append(Build(NextEventId(existing))), now).Problems;
         var newProblems = after.Except(before).ToList();
         if (newProblems.Count > 0)
             return ChangeResult.Fail($"That correction would break the history: {newProblems[0]}");
 
+        var candidate = Build(0);
         db.StatusEvents.Add(candidate);
         db.SaveChanges();
         return ChangeResult.Ok();
@@ -150,6 +156,13 @@ public sealed class ApplicationService(JobTrackerDbContext db, TimeProvider cloc
             return new ApplicationView(a, events, StatusProjection.Project(events, now));
         }).ToList();
     }
+
+    /// <summary>
+    /// An Id higher than any event in this application. Database identity values only grow, so a new row's real Id
+    /// will also be higher than every existing one. Only used for dry runs, never saved.
+    /// </summary>
+    private static long NextEventId(IReadOnlyList<StatusEvent> existing) =>
+        existing.Count == 0 ? 1 : existing.Max(e => e.Id) + 1;
 
     private List<StatusEvent> LoadEvents(int applicationId) =>
         Sort(db.StatusEvents.AsNoTracking().Where(e => e.ApplicationId == applicationId).ToList());

@@ -183,6 +183,41 @@ public sealed class ApplicationServiceTests : IDisposable
         Assert.False(view.Projection.IsNoReply);
     }
 
+    // ---- Same-timestamp events (regression: the dry run used to sort a new event before older ones) ----
+
+    private static readonly DateTimeOffset AppliedInstant = new(2026, 11, 1, 0, 0, 0, TimeSpan.Zero);
+
+    [Fact]
+    public void A_change_with_the_same_timestamp_as_the_previous_event_is_allowed_and_comes_after_it()
+    {
+        var id = AddAcme();
+
+        using var db = NewContext();
+        var service = NewService(db);
+        var result = service.RecordStatusChange(id, ApplicationStatus.Rejected, AppliedInstant, null);
+
+        Assert.True(result.Succeeded, result.Error);
+        var view = service.Get(id)!;
+        Assert.Equal(ApplicationStatus.Rejected, view.Projection.Status);
+        Assert.Empty(view.Projection.Problems);
+    }
+
+    [Fact]
+    public void A_correction_with_the_same_timestamp_as_other_events_is_allowed()
+    {
+        var id = AddAcme();
+
+        using var db = NewContext();
+        var service = NewService(db);
+        Assert.True(service.RecordStatusChange(id, ApplicationStatus.Rejected, AppliedInstant, null).Succeeded);
+        var wrongId = service.Get(id)!.Events[1].Id;
+
+        var result = service.CorrectEvent(id, wrongId, ApplicationStatus.Withdrawn, AppliedInstant, "wrong status");
+
+        Assert.True(result.Succeeded, result.Error);
+        Assert.Equal(ApplicationStatus.Withdrawn, service.Get(id)!.Projection.Status);
+    }
+
     // ---- Corrections ----
 
     private (int AppId, long WrongEventId) AppliedThenWronglyRejected(ApplicationService service)
