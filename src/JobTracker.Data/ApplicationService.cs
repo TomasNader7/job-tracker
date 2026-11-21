@@ -68,6 +68,11 @@ public sealed class ApplicationService(JobTrackerDbContext db, TimeProvider cloc
             return ChangeResult.Fail($"{current} to {newStatus} is not allowed. Allowed from {current}: {options}.");
         }
 
+        // Plain-language check first; the dry run below is the safety net for anything else.
+        var latest = existing.Max(e => e.EffectiveAt);
+        if (effectiveAt < latest)
+            return ChangeResult.Fail($"The date must be on or after {latest:yyyy-MM-dd}, the date of the latest event.");
+
         var candidate = StatusEvent.Create(0, applicationId, current, newStatus, effectiveAt,
             clock.GetUtcNow(), EventSource.Manual, note: string.IsNullOrWhiteSpace(note) ? null : note.Trim());
 

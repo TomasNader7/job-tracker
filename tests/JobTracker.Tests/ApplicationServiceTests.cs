@@ -144,6 +144,7 @@ public sealed class ApplicationServiceTests : IDisposable
             Start.AddDays(-10), null);
 
         Assert.False(result.Succeeded);
+        Assert.Contains("on or after 2026-11-01", result.Error);
         Assert.Single(service.Get(id)!.Events);
     }
 
