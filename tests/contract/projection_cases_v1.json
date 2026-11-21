@@ -783,6 +783,2073 @@
      "interview_date": null
     }
    }
+  },
+  {
+   "name": "transition_matrix_every_from_to_pair",
+   "events": [
+    {
+     "event_sequence": 1,
+     "application_id": 1,
+     "previous_status": null,
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 2,
+     "application_id": 1,
+     "previous_status": "NotStarted",
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 3,
+     "application_id": 2,
+     "previous_status": null,
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 4,
+     "application_id": 2,
+     "previous_status": "NotStarted",
+     "new_status": "Applied",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 5,
+     "application_id": 3,
+     "previous_status": null,
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 6,
+     "application_id": 3,
+     "previous_status": "NotStarted",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 7,
+     "application_id": 4,
+     "previous_status": null,
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 8,
+     "application_id": 4,
+     "previous_status": "NotStarted",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 9,
+     "application_id": 5,
+     "previous_status": null,
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 10,
+     "application_id": 5,
+     "previous_status": "NotStarted",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 11,
+     "application_id": 6,
+     "previous_status": null,
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 12,
+     "application_id": 6,
+     "previous_status": "NotStarted",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 13,
+     "application_id": 7,
+     "previous_status": null,
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 14,
+     "application_id": 7,
+     "previous_status": "NotStarted",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 15,
+     "application_id": 8,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 16,
+     "application_id": 8,
+     "previous_status": "Applied",
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 17,
+     "application_id": 9,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 18,
+     "application_id": 9,
+     "previous_status": "Applied",
+     "new_status": "Applied",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 19,
+     "application_id": 10,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 20,
+     "application_id": 10,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 21,
+     "application_id": 11,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 22,
+     "application_id": 11,
+     "previous_status": "Applied",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 23,
+     "application_id": 12,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 24,
+     "application_id": 12,
+     "previous_status": "Applied",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 25,
+     "application_id": 13,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 26,
+     "application_id": 13,
+     "previous_status": "Applied",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 27,
+     "application_id": 14,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 28,
+     "application_id": 14,
+     "previous_status": "Applied",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 29,
+     "application_id": 15,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 30,
+     "application_id": 15,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 31,
+     "application_id": 15,
+     "previous_status": "InterviewScheduled",
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 32,
+     "application_id": 16,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 33,
+     "application_id": 16,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 34,
+     "application_id": 16,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Applied",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 35,
+     "application_id": 17,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 36,
+     "application_id": 17,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 37,
+     "application_id": 17,
+     "previous_status": "InterviewScheduled",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 38,
+     "application_id": 18,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 39,
+     "application_id": 18,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 40,
+     "application_id": 18,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 41,
+     "application_id": 19,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 42,
+     "application_id": 19,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 43,
+     "application_id": 19,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 44,
+     "application_id": 20,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 45,
+     "application_id": 20,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 46,
+     "application_id": 20,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 47,
+     "application_id": 21,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 48,
+     "application_id": 21,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 49,
+     "application_id": 21,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 50,
+     "application_id": 22,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 51,
+     "application_id": 22,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 52,
+     "application_id": 22,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 53,
+     "application_id": 22,
+     "previous_status": "Interviewed",
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 54,
+     "application_id": 23,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 55,
+     "application_id": 23,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 56,
+     "application_id": 23,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 57,
+     "application_id": 23,
+     "previous_status": "Interviewed",
+     "new_status": "Applied",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 58,
+     "application_id": 24,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 59,
+     "application_id": 24,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 60,
+     "application_id": 24,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 61,
+     "application_id": 24,
+     "previous_status": "Interviewed",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 62,
+     "application_id": 25,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 63,
+     "application_id": 25,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 64,
+     "application_id": 25,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 65,
+     "application_id": 25,
+     "previous_status": "Interviewed",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 66,
+     "application_id": 26,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 67,
+     "application_id": 26,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 68,
+     "application_id": 26,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 69,
+     "application_id": 26,
+     "previous_status": "Interviewed",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 70,
+     "application_id": 27,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 71,
+     "application_id": 27,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 72,
+     "application_id": 27,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 73,
+     "application_id": 27,
+     "previous_status": "Interviewed",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 74,
+     "application_id": 28,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 75,
+     "application_id": 28,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 76,
+     "application_id": 28,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 77,
+     "application_id": 28,
+     "previous_status": "Interviewed",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 78,
+     "application_id": 29,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 79,
+     "application_id": 29,
+     "previous_status": "Applied",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 80,
+     "application_id": 29,
+     "previous_status": "Rejected",
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 81,
+     "application_id": 30,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 82,
+     "application_id": 30,
+     "previous_status": "Applied",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 83,
+     "application_id": 30,
+     "previous_status": "Rejected",
+     "new_status": "Applied",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 84,
+     "application_id": 31,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 85,
+     "application_id": 31,
+     "previous_status": "Applied",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 86,
+     "application_id": 31,
+     "previous_status": "Rejected",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 87,
+     "application_id": 32,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 88,
+     "application_id": 32,
+     "previous_status": "Applied",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 89,
+     "application_id": 32,
+     "previous_status": "Rejected",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 90,
+     "application_id": 33,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 91,
+     "application_id": 33,
+     "previous_status": "Applied",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 92,
+     "application_id": 33,
+     "previous_status": "Rejected",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 93,
+     "application_id": 34,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 94,
+     "application_id": 34,
+     "previous_status": "Applied",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 95,
+     "application_id": 34,
+     "previous_status": "Rejected",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 96,
+     "application_id": 35,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 97,
+     "application_id": 35,
+     "previous_status": "Applied",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 98,
+     "application_id": 35,
+     "previous_status": "Rejected",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 99,
+     "application_id": 36,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 100,
+     "application_id": 36,
+     "previous_status": "Applied",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 101,
+     "application_id": 36,
+     "previous_status": "Withdrawn",
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 102,
+     "application_id": 37,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 103,
+     "application_id": 37,
+     "previous_status": "Applied",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 104,
+     "application_id": 37,
+     "previous_status": "Withdrawn",
+     "new_status": "Applied",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 105,
+     "application_id": 38,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 106,
+     "application_id": 38,
+     "previous_status": "Applied",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 107,
+     "application_id": 38,
+     "previous_status": "Withdrawn",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 108,
+     "application_id": 39,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 109,
+     "application_id": 39,
+     "previous_status": "Applied",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 110,
+     "application_id": 39,
+     "previous_status": "Withdrawn",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 111,
+     "application_id": 40,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 112,
+     "application_id": 40,
+     "previous_status": "Applied",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 113,
+     "application_id": 40,
+     "previous_status": "Withdrawn",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 114,
+     "application_id": 41,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 115,
+     "application_id": 41,
+     "previous_status": "Applied",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 116,
+     "application_id": 41,
+     "previous_status": "Withdrawn",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 117,
+     "application_id": 42,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 118,
+     "application_id": 42,
+     "previous_status": "Applied",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 119,
+     "application_id": 42,
+     "previous_status": "Withdrawn",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 120,
+     "application_id": 43,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 121,
+     "application_id": 43,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 122,
+     "application_id": 43,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 123,
+     "application_id": 43,
+     "previous_status": "Interviewed",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 124,
+     "application_id": 43,
+     "previous_status": "Accepted",
+     "new_status": "NotStarted",
+     "effective_at": "2026-11-05T00:00:00.000000Z",
+     "recorded_at": "2026-11-05T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 125,
+     "application_id": 44,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 126,
+     "application_id": 44,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 127,
+     "application_id": 44,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 128,
+     "application_id": 44,
+     "previous_status": "Interviewed",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 129,
+     "application_id": 44,
+     "previous_status": "Accepted",
+     "new_status": "Applied",
+     "effective_at": "2026-11-05T00:00:00.000000Z",
+     "recorded_at": "2026-11-05T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 130,
+     "application_id": 45,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 131,
+     "application_id": 45,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 132,
+     "application_id": 45,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 133,
+     "application_id": 45,
+     "previous_status": "Interviewed",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 134,
+     "application_id": 45,
+     "previous_status": "Accepted",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-05T00:00:00.000000Z",
+     "recorded_at": "2026-11-05T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 135,
+     "application_id": 46,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 136,
+     "application_id": 46,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 137,
+     "application_id": 46,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 138,
+     "application_id": 46,
+     "previous_status": "Interviewed",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 139,
+     "application_id": 46,
+     "previous_status": "Accepted",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-05T00:00:00.000000Z",
+     "recorded_at": "2026-11-05T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 140,
+     "application_id": 47,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 141,
+     "application_id": 47,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 142,
+     "application_id": 47,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 143,
+     "application_id": 47,
+     "previous_status": "Interviewed",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 144,
+     "application_id": 47,
+     "previous_status": "Accepted",
+     "new_status": "Rejected",
+     "effective_at": "2026-11-05T00:00:00.000000Z",
+     "recorded_at": "2026-11-05T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 145,
+     "application_id": 48,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 146,
+     "application_id": 48,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 147,
+     "application_id": 48,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 148,
+     "application_id": 48,
+     "previous_status": "Interviewed",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 149,
+     "application_id": 48,
+     "previous_status": "Accepted",
+     "new_status": "Withdrawn",
+     "effective_at": "2026-11-05T00:00:00.000000Z",
+     "recorded_at": "2026-11-05T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 150,
+     "application_id": 49,
+     "previous_status": null,
+     "new_status": "Applied",
+     "effective_at": "2026-11-01T00:00:00.000000Z",
+     "recorded_at": "2026-11-01T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 151,
+     "application_id": 49,
+     "previous_status": "Applied",
+     "new_status": "InterviewScheduled",
+     "effective_at": "2026-11-02T00:00:00.000000Z",
+     "recorded_at": "2026-11-02T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 152,
+     "application_id": 49,
+     "previous_status": "InterviewScheduled",
+     "new_status": "Interviewed",
+     "effective_at": "2026-11-03T00:00:00.000000Z",
+     "recorded_at": "2026-11-03T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 153,
+     "application_id": 49,
+     "previous_status": "Interviewed",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-04T00:00:00.000000Z",
+     "recorded_at": "2026-11-04T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    },
+    {
+     "event_sequence": 154,
+     "application_id": 49,
+     "previous_status": "Accepted",
+     "new_status": "Accepted",
+     "effective_at": "2026-11-05T00:00:00.000000Z",
+     "recorded_at": "2026-11-05T00:00:00.000000Z",
+     "source": "Manual",
+     "supersedes_event_sequence": null,
+     "note": null
+    }
+   ],
+   "expected": {
+    "1": {
+     "status": "NotStarted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "2": {
+     "status": "Applied",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": null
+    },
+    "3": {
+     "status": "NotStarted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "4": {
+     "status": "NotStarted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "5": {
+     "status": "NotStarted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "6": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": null
+    },
+    "7": {
+     "status": "NotStarted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "8": {
+     "status": "Applied",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "9": {
+     "status": "Applied",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "10": {
+     "status": "InterviewScheduled",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": null
+    },
+    "11": {
+     "status": "Applied",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "12": {
+     "status": "Rejected",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": null
+    },
+    "13": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": null
+    },
+    "14": {
+     "status": "Applied",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "15": {
+     "status": "InterviewScheduled",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "16": {
+     "status": "InterviewScheduled",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "17": {
+     "status": "InterviewScheduled",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "18": {
+     "status": "Interviewed",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": "2026-11-03"
+    },
+    "19": {
+     "status": "Rejected",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": null
+    },
+    "20": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": null
+    },
+    "21": {
+     "status": "InterviewScheduled",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "22": {
+     "status": "Interviewed",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    },
+    "23": {
+     "status": "Interviewed",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    },
+    "24": {
+     "status": "InterviewScheduled",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": "2026-11-03"
+    },
+    "25": {
+     "status": "Interviewed",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    },
+    "26": {
+     "status": "Rejected",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": "2026-11-03"
+    },
+    "27": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": "2026-11-03"
+    },
+    "28": {
+     "status": "Accepted",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": "2026-11-03"
+    },
+    "29": {
+     "status": "Rejected",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "30": {
+     "status": "Rejected",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "31": {
+     "status": "InterviewScheduled",
+     "is_no_reply": 0,
+     "problem_codes": [],
+     "interview_date": null
+    },
+    "32": {
+     "status": "Rejected",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "33": {
+     "status": "Rejected",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "34": {
+     "status": "Rejected",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "35": {
+     "status": "Rejected",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "36": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "37": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "38": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "39": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "40": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "41": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "42": {
+     "status": "Withdrawn",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": null
+    },
+    "43": {
+     "status": "Accepted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    },
+    "44": {
+     "status": "Accepted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    },
+    "45": {
+     "status": "Accepted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    },
+    "46": {
+     "status": "Accepted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    },
+    "47": {
+     "status": "Accepted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    },
+    "48": {
+     "status": "Accepted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    },
+    "49": {
+     "status": "Accepted",
+     "is_no_reply": 0,
+     "problem_codes": [
+      "ILLEGAL_TRANSITION"
+     ],
+     "interview_date": "2026-11-03"
+    }
+   }
   }
  ]
 }
