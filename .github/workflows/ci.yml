@@ -39,6 +39,23 @@ jobs:
       - name: Test
         run: dotnet test JobTracker.sln --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Python guard tests
+        run: python -m unittest discover -s scripts/tests -v
+
+      # Cross-language check: a snapshot written by the C# exporter must pass the Python upload guard.
+      # Nothing is uploaded: --dry-run validates only. Uses the synthetic demo database on LocalDB.
+      - name: Demo lane smoke test (C# export passes the Python guard)
+        shell: pwsh
+        run: |
+          dotnet run --project src/JobTracker.Tools --configuration Release --no-build -- seed-demo --reset
+          dotnet run --project src/JobTracker.Tools --configuration Release --no-build -- export-snapshot
+          $folder = Get-ChildItem snapshots -Directory | Select-Object -First 1
+          python scripts/upload_snapshot.py $folder.FullName --dry-run
+
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
