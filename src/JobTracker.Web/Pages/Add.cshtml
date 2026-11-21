@@ -1,0 +1,30 @@
+@page
+@model AddModel
+@{
+    ViewData["Title"] = "Add application";
+}
+
+<h1 class="h3 mb-3">Add application</h1>
+
+<form method="post" style="max-width: 480px">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="CompanyName" class="form-label"></label>
+        <input asp-for="CompanyName" class="form-control" />
+        <span asp-validation-for="CompanyName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="JobTitle" class="form-label"></label>
+        <input asp-for="JobTitle" class="form-control" />
+        <span asp-validation-for="JobTitle" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="DateApplied" class="form-label"></label>
+        <input asp-for="DateApplied" type="date" class="form-control" />
+        <span asp-validation-for="DateApplied" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a class="btn btn-link" asp-page="/Index">Cancel</a>
+</form>

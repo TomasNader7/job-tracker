@@ -1,19 +1,18 @@
-using Microsoft.AspNetCore.Mvc;
+using JobTracker.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace JobTracker.Web.Pages;
 
-public class IndexModel : PageModel
+public class IndexModel(ApplicationService service) : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
-
-    public IndexModel(ILogger<IndexModel> logger)
-    {
-        _logger = logger;
-    }
+    public IReadOnlyList<ApplicationView> Applications { get; private set; } = [];
 
     public void OnGet()
     {
-
+        // Newest applications first.
+        Applications = service.List()
+            .OrderByDescending(v => v.Application.DateApplied)
+            .ThenByDescending(v => v.Application.Id)
+            .ToList();
     }
 }

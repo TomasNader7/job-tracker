@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\JobTracker.Domain\JobTracker.Domain.csproj" />
     <ProjectReference Include="..\..\src\JobTracker.Data\JobTracker.Data.csproj" />
+    <ProjectReference Include="..\..\src\JobTracker.Web\JobTracker.Web.csproj" />
   </ItemGroup>
 
 </Project>

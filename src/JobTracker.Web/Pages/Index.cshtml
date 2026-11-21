@@ -1,10 +1,46 @@
 ﻿@page
 @model IndexModel
+@using JobTracker.Web
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Applications";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Applications</h1>
+    <a class="btn btn-primary" asp-page="/Add">Add application</a>
 </div>
+
+@if (Model.Applications.Count == 0)
+{
+    <p class="text-muted">No applications yet. Add your first one.</p>
+}
+else
+{
+    <table class="table table-sm align-middle">
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Title</th>
+                <th>Applied</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var v in Model.Applications)
+        {
+            <tr>
+                <td>@v.Application.CompanyName</td>
+                <td>@v.Application.JobTitle</td>
+                <td>@v.Application.DateApplied.ToString("yyyy-MM-dd")</td>
+                <td>
+                    @StatusDisplay.Label(v)
+                    @if (v.Projection.Problems.Count > 0)
+                    {
+                        <span class="text-warning" title="@string.Join(" | ", v.Projection.Problems)">&#9888;</span>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
