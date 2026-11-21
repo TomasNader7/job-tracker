@@ -21,13 +21,26 @@ public sealed class JobTrackerDbContext(DbContextOptions<JobTrackerDbContext> op
             e.HasKey(x => x.Id);
             e.Property(x => x.Id).ValueGeneratedOnAdd();
             e.Property(x => x.ApplicationId);
-            e.Property(x => x.PreviousStatus);
-            e.Property(x => x.NewStatus);
+            // Enums are stored as words ("Applied"), not numbers, so the table is readable in Power BI.
+            e.Property(x => x.PreviousStatus).HasConversion<string>().HasMaxLength(30);
+            e.Property(x => x.NewStatus).HasConversion<string>().HasMaxLength(30);
             e.Property(x => x.EffectiveAt);
             e.Property(x => x.RecordedAt);
-            e.Property(x => x.Source);
+            e.Property(x => x.Source).HasConversion<string>().HasMaxLength(30);
             e.Property(x => x.SupersedesEventId);
-            e.Property(x => x.Note);
+            e.Property(x => x.Note).HasMaxLength(1000);
+
+            // Every event must belong to a real application, and a correction must point at a real event.
+            // Restrict = the database refuses to delete a row that history still points at.
+            e.HasOne<Application>().WithMany().HasForeignKey(x => x.ApplicationId).OnDelete(DeleteBehavior.Restrict);
+            e.HasOne<StatusEvent>().WithMany().HasForeignKey(x => x.SupersedesEventId).OnDelete(DeleteBehavior.Restrict);
+            e.HasIndex(x => x.ApplicationId);
+        });
+
+        modelBuilder.Entity<Application>(a =>
+        {
+            a.Property(x => x.CompanyName).HasMaxLength(200);
+            a.Property(x => x.JobTitle).HasMaxLength(200);
         });
     }
 }
