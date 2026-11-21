@@ -11,7 +11,7 @@ A personal job-search tracker built in stages: a Power BI dashboard, a small loc
 | 0 | Power BI dashboard on a star schema (Funnel, Performance, Timeline pages) | Done |
 | 1 | Databricks Free Edition feasibility spike (synthetic data only) | Done, see [the spike note](docs/phase1-databricks-spike.md) |
 | 2 | ASP.NET Core app with an append-only status history | Feature-complete, tests run in CI |
-| 3 | First synthetic end-to-end slice: app to Databricks to Power BI | Planned |
+| 3 | Synthetic end-to-end slice: seeded demo database, versioned snapshot, Databricks bronze/silver/gold, reconciled and rerun-safe | Done, see [the Phase 3 note](docs/phase3-end-to-end.md). Power BI refresh against the new gold table still to be confirmed |
 | 4 | Excel import and data-quality hardening | Planned |
 | 5 | Power BI integration and public release | Planned |
 
@@ -58,6 +58,19 @@ dotnet test
 ```
 
 The database tests build throwaway databases (`JobTracker_Test*`) from the migrations and delete them afterward. They never touch the `JobTracker` database. GitHub Actions runs the same tests on every push, on a Windows runner because LocalDB is Windows-only.
+
+## Synthetic demo lane (Phase 3)
+
+The app's history can be exported as a versioned snapshot and run through Databricks, where the status of every application is **recomputed independently** from the events and reconciled against what the app computed. Synthetic data only: the tools refuse any database but `JobTracker_Demo`, and the uploader refuses anything that is not a clean synthetic snapshot before the Databricks CLI is called.
+
+```
+dotnet run --project src/JobTracker.Tools -- seed-demo --reset
+dotnet run --project src/JobTracker.Tools -- export-snapshot
+python scripts/upload_snapshot.py snapshots/<snapshot_id>
+python scripts/verify_databricks_run.py snapshots/<snapshot_id>
+```
+
+The contract between the two sides is [docs/snapshot-contract.md](docs/snapshot-contract.md). Results and limits are in [docs/phase3-end-to-end.md](docs/phase3-end-to-end.md). Python tests: `python -m unittest discover -s scripts/tests` (the Spark tests need `pip install pyspark==3.5.3` and Java 17, and are skipped without them).
 
 ## Power BI dashboard (Phase 0)
 
