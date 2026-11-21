@@ -19,6 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Cross-language golden fixture, copied next to the test dll so tests can read it. -->
+    <Content Include="..\contract\projection_cases_v1.json" Link="contract\projection_cases_v1.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\JobTracker.Domain\JobTracker.Domain.csproj" />
     <ProjectReference Include="..\..\src\JobTracker.Data\JobTracker.Data.csproj" />
     <ProjectReference Include="..\..\src\JobTracker.Web\JobTracker.Web.csproj" />
