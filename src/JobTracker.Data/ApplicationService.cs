@@ -26,7 +26,7 @@ public sealed record ChangeResult(bool Succeeded, string? Error)
 public sealed class ApplicationService(JobTrackerDbContext db, TimeProvider clock)
 {
     public Application AddApplication(string companyName, string jobTitle, DateOnly dateApplied, JobType? jobType = null,
-        ResumeVariant? resumeVariant = null, Priority? priority = null)
+        ResumeVariant? resumeVariant = null, Priority? priority = null, ReferralType? referralType = null)
     {
         if (string.IsNullOrWhiteSpace(companyName))
             throw new ArgumentException("Company name is required.", nameof(companyName));
@@ -41,6 +41,7 @@ public sealed class ApplicationService(JobTrackerDbContext db, TimeProvider cloc
             JobType = jobType,
             ResumeVariant = resumeVariant,
             Priority = priority,
+            ReferralType = referralType,
         };
 
         // Application and its first event are saved together or not at all.

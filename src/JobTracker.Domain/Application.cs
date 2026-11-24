@@ -13,4 +13,5 @@ public sealed class Application
     public JobType? JobType { get; init; }
     public ResumeVariant? ResumeVariant { get; init; }
     public Priority? Priority { get; init; }
+    public ReferralType? ReferralType { get; init; }
 }

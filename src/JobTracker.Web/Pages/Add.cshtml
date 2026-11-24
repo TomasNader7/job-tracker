@@ -55,6 +55,16 @@
             }
         </select>
     </div>
+    <div class="mb-3">
+        <label asp-for="ReferralType" class="form-label">Referral type (optional)</label>
+        <select asp-for="ReferralType" class="form-select">
+            <option value="">(none)</option>
+            @foreach (var type in Enum.GetValues<ReferralType>())
+            {
+                <option value="@type" selected="@(Model.ReferralType == type)">@ReferralTypeDisplay.Label(type)</option>
+            }
+        </select>
+    </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a class="btn btn-link" asp-page="/Index">Cancel</a>
