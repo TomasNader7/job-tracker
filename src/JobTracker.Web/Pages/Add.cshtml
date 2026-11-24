@@ -45,6 +45,16 @@
             }
         </select>
     </div>
+    <div class="mb-3">
+        <label asp-for="Priority" class="form-label">Priority (optional)</label>
+        <select asp-for="Priority" class="form-select">
+            <option value="">(none)</option>
+            @foreach (var level in Enum.GetValues<Priority>())
+            {
+                <option value="@level" selected="@(Model.Priority == level)">@PriorityDisplay.Label(level)</option>
+            }
+        </select>
+    </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a class="btn btn-link" asp-page="/Index">Cancel</a>

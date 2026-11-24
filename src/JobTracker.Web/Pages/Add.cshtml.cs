@@ -25,6 +25,10 @@ public class AddModel(ApplicationService service, TimeProvider clock) : PageMode
     [BindProperty]
     public ResumeVariant? ResumeVariant { get; set; }
 
+    /// <summary>Optional. An empty choice in the dropdown binds to null, which means Unspecified.</summary>
+    [BindProperty]
+    public Priority? Priority { get; set; }
+
     public void OnGet() => DateApplied = DateOnly.FromDateTime(clock.GetLocalNow().DateTime);
 
     public IActionResult OnPost()
@@ -32,7 +36,7 @@ public class AddModel(ApplicationService service, TimeProvider clock) : PageMode
         if (!ModelState.IsValid)
             return Page();
 
-        service.AddApplication(CompanyName, JobTitle, DateApplied, JobType, ResumeVariant);
+        service.AddApplication(CompanyName, JobTitle, DateApplied, JobType, ResumeVariant, Priority);
         return RedirectToPage("Index");
     }
 }
