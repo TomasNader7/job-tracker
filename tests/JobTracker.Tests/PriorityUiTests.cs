@@ -95,6 +95,18 @@ public sealed class PriorityUiTests : IDisposable
     }
 
     [Fact]
+    public void The_list_shows_a_dash_when_an_application_has_no_priority()
+    {
+        Assert.Equal("-", PriorityDisplay.LabelOrDash(null));
+    }
+
+    [Fact]
+    public void The_list_shows_the_label_when_an_application_has_a_priority()
+    {
+        Assert.Equal("Top Priority", PriorityDisplay.LabelOrDash(Priority.TopPriority));
+    }
+
+    [Fact]
     public void Dropdown_labels_are_the_dashboard_names_in_order_without_unspecified()
     {
         // The dashboard list ends with "Unspecified", which the app shows as the empty "(none)" choice instead.

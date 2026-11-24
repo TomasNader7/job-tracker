@@ -15,4 +15,7 @@ public static class PriorityDisplay
         Priority.LowPriority => "Low Priority",
         _ => throw new ArgumentOutOfRangeException(nameof(priority), priority, "Unknown priority."),
     };
+
+    /// <summary>For the list page: the label, or a dash when the application has no priority.</summary>
+    public static string LabelOrDash(Priority? priority) => priority is { } p ? Label(p) : "-";
 }
