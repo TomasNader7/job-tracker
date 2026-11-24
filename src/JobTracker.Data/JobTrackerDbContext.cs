@@ -45,6 +45,8 @@ public sealed class JobTrackerDbContext(DbContextOptions<JobTrackerDbContext> op
             a.Property(x => x.JobType).HasConversion<string>().HasMaxLength(30);
             // Optional, stored as a word ("BackendSwe"); null means Unspecified.
             a.Property(x => x.ResumeVariant).HasConversion<string>().HasMaxLength(30);
+            // Optional, stored as a word ("TopPriority"); null means Unspecified.
+            a.Property(x => x.Priority).HasConversion<string>().HasMaxLength(30);
         });
     }
 }

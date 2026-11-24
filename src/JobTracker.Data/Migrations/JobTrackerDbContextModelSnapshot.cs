@@ -47,6 +47,10 @@ namespace JobTracker.Data.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<string>("Priority")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.Property<string>("ResumeVariant")
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");

@@ -12,4 +12,5 @@ public sealed class Application
     public required DateOnly DateApplied { get; init; }
     public JobType? JobType { get; init; }
     public ResumeVariant? ResumeVariant { get; init; }
+    public Priority? Priority { get; init; }
 }
