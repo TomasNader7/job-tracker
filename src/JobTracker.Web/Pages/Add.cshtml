@@ -35,6 +35,16 @@
             }
         </select>
     </div>
+    <div class="mb-3">
+        <label asp-for="ResumeVariant" class="form-label">Resume variant (optional)</label>
+        <select asp-for="ResumeVariant" class="form-select">
+            <option value="">(none)</option>
+            @foreach (var variant in Enum.GetValues<ResumeVariant>())
+            {
+                <option value="@variant" selected="@(Model.ResumeVariant == variant)">@ResumeVariantDisplay.Label(variant)</option>
+            }
+        </select>
+    </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a class="btn btn-link" asp-page="/Index">Cancel</a>
