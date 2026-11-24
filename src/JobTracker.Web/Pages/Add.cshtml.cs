@@ -33,6 +33,10 @@ public class AddModel(ApplicationService service, TimeProvider clock) : PageMode
     [BindProperty]
     public ReferralType? ReferralType { get; set; }
 
+    /// <summary>Optional free text. Blank is saved as null.</summary>
+    [BindProperty, StringLength(200)]
+    public string? Location { get; set; }
+
     public void OnGet() => DateApplied = DateOnly.FromDateTime(clock.GetLocalNow().DateTime);
 
     public IActionResult OnPost()
@@ -40,7 +44,7 @@ public class AddModel(ApplicationService service, TimeProvider clock) : PageMode
         if (!ModelState.IsValid)
             return Page();
 
-        service.AddApplication(CompanyName, JobTitle, DateApplied, JobType, ResumeVariant, Priority, ReferralType);
+        service.AddApplication(CompanyName, JobTitle, DateApplied, JobType, ResumeVariant, Priority, ReferralType, Location);
         return RedirectToPage("Index");
     }
 }

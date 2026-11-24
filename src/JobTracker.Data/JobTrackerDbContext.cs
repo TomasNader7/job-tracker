@@ -49,6 +49,8 @@ public sealed class JobTrackerDbContext(DbContextOptions<JobTrackerDbContext> op
             a.Property(x => x.Priority).HasConversion<string>().HasMaxLength(30);
             // Optional, stored as a word ("ColdApply"); null means not recorded.
             a.Property(x => x.ReferralType).HasConversion<string>().HasMaxLength(30);
+            // Optional free text ("Austin, TX", "Remote"); null when not given.
+            a.Property(x => x.Location).HasMaxLength(200);
         });
     }
 }

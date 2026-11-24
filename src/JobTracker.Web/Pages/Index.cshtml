@@ -25,6 +25,7 @@ else
                 <th>Resume variant</th>
                 <th>Priority</th>
                 <th>Referral</th>
+                <th>Location</th>
                 <th>Applied</th>
                 <th>Status</th>
             </tr>
@@ -39,6 +40,7 @@ else
                 <td>@ResumeVariantDisplay.LabelOrDash(v.Application.ResumeVariant)</td>
                 <td>@PriorityDisplay.LabelOrDash(v.Application.Priority)</td>
                 <td>@ReferralTypeDisplay.LabelOrDash(v.Application.ReferralType)</td>
+                <td>@(v.Application.Location ?? "-")</td>
                 <td>@v.Application.DateApplied.ToString("yyyy-MM-dd")</td>
                 <td>
                     @StatusDisplay.Label(v)

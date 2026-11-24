@@ -14,4 +14,5 @@ public sealed class Application
     public ResumeVariant? ResumeVariant { get; init; }
     public Priority? Priority { get; init; }
     public ReferralType? ReferralType { get; init; }
+    public string? Location { get; init; }
 }
