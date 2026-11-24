@@ -10,4 +10,5 @@ public sealed class Application
     public required string CompanyName { get; init; }
     public required string JobTitle { get; init; }
     public required DateOnly DateApplied { get; init; }
+    public JobType? JobType { get; init; }
 }

@@ -41,6 +41,8 @@ public sealed class JobTrackerDbContext(DbContextOptions<JobTrackerDbContext> op
         {
             a.Property(x => x.CompanyName).HasMaxLength(200);
             a.Property(x => x.JobTitle).HasMaxLength(200);
+            // Optional, stored as a word ("DataAnalyst"); null for applications with no job type.
+            a.Property(x => x.JobType).HasConversion<string>().HasMaxLength(30);
         });
     }
 }

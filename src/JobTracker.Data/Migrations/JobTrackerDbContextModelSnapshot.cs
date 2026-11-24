@@ -43,6 +43,10 @@ namespace JobTracker.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("JobType")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Applications");
