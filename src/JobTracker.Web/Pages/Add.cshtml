@@ -1,4 +1,5 @@
 @page
+@using JobTracker.Domain
 @model AddModel
 @{
     ViewData["Title"] = "Add application";
@@ -23,6 +24,16 @@
         <label asp-for="DateApplied" class="form-label"></label>
         <input asp-for="DateApplied" type="date" class="form-control" />
         <span asp-validation-for="DateApplied" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="JobType" class="form-label">Job type (optional)</label>
+        <select asp-for="JobType" class="form-select">
+            <option value="">(none)</option>
+            @foreach (var type in Enum.GetValues<JobType>())
+            {
+                <option value="@type" selected="@(Model.JobType == type)">@JobTypeDisplay.Label(type)</option>
+            }
+        </select>
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>

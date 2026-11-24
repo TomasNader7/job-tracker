@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using JobTracker.Data;
+using JobTracker.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -16,6 +17,10 @@ public class AddModel(ApplicationService service, TimeProvider clock) : PageMode
     [BindProperty]
     public DateOnly DateApplied { get; set; }
 
+    /// <summary>Optional. An empty choice in the dropdown binds to null.</summary>
+    [BindProperty]
+    public JobType? JobType { get; set; }
+
     public void OnGet() => DateApplied = DateOnly.FromDateTime(clock.GetLocalNow().DateTime);
 
     public IActionResult OnPost()
@@ -23,7 +28,7 @@ public class AddModel(ApplicationService service, TimeProvider clock) : PageMode
         if (!ModelState.IsValid)
             return Page();
 
-        service.AddApplication(CompanyName, JobTitle, DateApplied);
+        service.AddApplication(CompanyName, JobTitle, DateApplied, JobType);
         return RedirectToPage("Index");
     }
 }
