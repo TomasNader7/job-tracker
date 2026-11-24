@@ -91,6 +91,18 @@ public sealed class JobTypeUiTests : IDisposable
     }
 
     [Fact]
+    public void The_list_shows_a_dash_when_an_application_has_no_job_type()
+    {
+        Assert.Equal("-", JobTypeDisplay.LabelOrDash(null));
+    }
+
+    [Fact]
+    public void The_list_shows_the_label_when_an_application_has_a_job_type()
+    {
+        Assert.Equal("BI Analyst", JobTypeDisplay.LabelOrDash(JobType.BiAnalyst));
+    }
+
+    [Fact]
     public void Dropdown_labels_are_the_nine_names_from_the_dashboard_list_in_order()
     {
         var csv = File.ReadAllLines(Path.Combine(RepoPaths.SyntheticDataDir, "dim_job_type.csv"))

@@ -21,6 +21,7 @@ else
             <tr>
                 <th>Company</th>
                 <th>Title</th>
+                <th>Job type</th>
                 <th>Applied</th>
                 <th>Status</th>
             </tr>
@@ -31,6 +32,7 @@ else
             <tr>
                 <td><a asp-page="/Details" asp-route-id="@v.Application.Id">@v.Application.CompanyName</a></td>
                 <td>@v.Application.JobTitle</td>
+                <td>@JobTypeDisplay.LabelOrDash(v.Application.JobType)</td>
                 <td>@v.Application.DateApplied.ToString("yyyy-MM-dd")</td>
                 <td>
                     @StatusDisplay.Label(v)

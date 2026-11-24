@@ -21,4 +21,7 @@ public static class JobTypeDisplay
         JobType.Other => "Other",
         _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unknown job type."),
     };
+
+    /// <summary>For the list page: the label, or a dash when the application has no job type.</summary>
+    public static string LabelOrDash(JobType? type) => type is { } t ? Label(t) : "-";
 }
