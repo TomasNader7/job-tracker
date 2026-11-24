@@ -19,4 +19,7 @@ public static class ResumeVariantDisplay
         ResumeVariant.FrontendSwe => "Frontend SWE",
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown resume variant."),
     };
+
+    /// <summary>For the list page: the label, or a dash when the application has no resume variant.</summary>
+    public static string LabelOrDash(ResumeVariant? variant) => variant is { } v ? Label(v) : "-";
 }

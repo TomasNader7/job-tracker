@@ -94,6 +94,18 @@ public sealed class ResumeVariantUiTests : IDisposable
     }
 
     [Fact]
+    public void The_list_shows_a_dash_when_an_application_has_no_resume_variant()
+    {
+        Assert.Equal("-", ResumeVariantDisplay.LabelOrDash(null));
+    }
+
+    [Fact]
+    public void The_list_shows_the_label_when_an_application_has_a_resume_variant()
+    {
+        Assert.Equal("ML/Data Science", ResumeVariantDisplay.LabelOrDash(ResumeVariant.MlDataScience));
+    }
+
+    [Fact]
     public void Dropdown_labels_are_the_dashboard_names_in_order_without_unspecified()
     {
         // The dashboard list ends with "Unspecified", which the app shows as the empty "(none)" choice instead.
