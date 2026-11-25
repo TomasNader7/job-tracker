@@ -227,6 +227,34 @@ class SparkPipelineTests(unittest.TestCase):
                "No_Replies_Rate": Decimal("0.0000")}
         self.assertEqual("2\t1\t1\t0\t0\t0\t1\t21.00\t0.5000\t0.5000\t0.0000\t0.0000\t0.0000\n", ns["canonical_funnel_text"](row))
 
+    # ---- additive schema changes: new columns are added, anything else is refused ----
+
+    def test_missing_columns_are_planned_as_additions_in_the_new_order(self):
+        plan = self.ns["plan_added_columns"]([("a", "string"), ("b", "int")],
+                                             [("a", "string"), ("c", "string"), ("b", "int"), ("d", "date")])
+
+        self.assertEqual([("c", "string"), ("d", "date")], plan)
+
+    def test_no_missing_columns_means_no_change(self):
+        pairs = [("a", "string"), ("b", "decimal(9,4)")]
+
+        self.assertEqual([], self.ns["plan_added_columns"](pairs, pairs))
+
+    def test_a_changed_type_is_refused_never_altered(self):
+        with self.assertRaises(ValueError) as ctx:
+            self.ns["plan_added_columns"]([("a", "string")], [("a", "int")])
+
+        self.assertIn("a", str(ctx.exception))
+
+    def test_a_column_the_new_data_no_longer_has_is_refused(self):
+        with self.assertRaises(ValueError):
+            self.ns["plan_added_columns"]([("a", "string"), ("old", "string")], [("a", "string")])
+
+    def test_the_alter_statement_quotes_names_and_lists_every_addition(self):
+        sql = self.ns["add_columns_sql"]("workspace.s.t", [("job_type", "string"), ("rate", "decimal(9,4)")])
+
+        self.assertEqual("ALTER TABLE workspace.s.t ADD COLUMNS (`job_type` string, `rate` decimal(9,4))", sql)
+
     def test_dimension_funnel_groups_null_as_unspecified_and_drops_groups_without_applications(self):
         ns, spark = self.ns, self.spark
         from pyspark.sql import functions as F

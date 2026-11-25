@@ -520,12 +520,36 @@ def table_name(name):
     return f"{CATALOG}.{SCHEMA}.{name}"
 
 
+def plan_added_columns(existing, wanted):
+    """existing, wanted: lists of (column name, type text). Returns the (name, type) pairs to ADD, in wanted order.
+    Only additions are allowed: a changed type, or a column the new data no longer has, raises ValueError."""
+    have = dict(existing)
+    want = dict(wanted)
+    for name, kind in wanted:
+        if name in have and have[name] != kind:
+            raise ValueError(f"Column {name} is {have[name]} in the table but {kind} in the new data. Not changing it.")
+    gone = [name for name, _ in existing if name not in want]
+    if gone:
+        raise ValueError(f"The new data no longer has column(s) {gone}. Not dropping anything.")
+    return [(name, kind) for name, kind in wanted if name not in have]
+
+
+def add_columns_sql(full, additions):
+    columns = ", ".join(f"`{name}` {kind}" for name, kind in additions)
+    return f"ALTER TABLE {full} ADD COLUMNS ({columns})"
+
+
 def write_snapshot_table(spark, df, name, snapshot_id):
-    """Replace this snapshot's rows only. A rerun never appends duplicates and never touches other snapshots."""
+    """Replace this snapshot's rows only. A rerun never appends duplicates and never touches other snapshots.
+    Columns the table lacks are added first (table ACLs block automatic schema merge); nothing else may change."""
     full = table_name(name)
     out = df.withColumn("snapshot_id", F.lit(snapshot_id))
     out = out.select("snapshot_id", *[c for c in out.columns if c != "snapshot_id"])
     if spark.catalog.tableExists(full):
+        additions = plan_added_columns([(f.name, f.dataType.simpleString()) for f in spark.table(full).schema.fields],
+                                       [(f.name, f.dataType.simpleString()) for f in out.schema.fields])
+        if additions:
+            spark.sql(add_columns_sql(full, additions))
         out.write.mode("overwrite").option("replaceWhere", f"snapshot_id = '{snapshot_id}'").saveAsTable(full)
     else:
         out.write.mode("overwrite").saveAsTable(full)
