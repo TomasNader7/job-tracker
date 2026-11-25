@@ -17,7 +17,7 @@ public sealed record ExportResult(string SnapshotId, string Folder, bool Already
     int Applications, int Events);
 
 /// <summary>
-/// Writes a versioned snapshot (snapshot contract v1) of the demo database: applications.csv, status_events.csv and
+/// Writes a versioned snapshot (snapshot contract v2) of the demo database: applications.csv, status_events.csv and
 /// manifest.json. The expected values in the manifest come from the C# projection; the Databricks pipeline must
 /// reach the same numbers on its own. Refuses every database except JobTracker_Demo.
 /// </summary>
@@ -71,6 +71,8 @@ public sealed class SnapshotExporter(string requiredDatabase = DemoDatabaseGuard
             [
                 app.Id.ToString(CultureInfo.InvariantCulture), app.CompanyName, app.JobTitle,
                 app.DateApplied.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                app.JobType?.ToString(), app.ResumeVariant?.ToString(), app.Priority?.ToString(),
+                app.ReferralType?.ToString(), app.Location,
                 result.Status?.ToString(), result.IsNoReply ? "1" : "0",
             ])).Append('\n');
         }

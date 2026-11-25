@@ -211,6 +211,22 @@ public sealed class SnapshotExporterTests : IDisposable
         JsonDocument.Parse(File.ReadAllText(Path.Combine(r.Folder, "manifest.json"))).RootElement;
 
     [Fact]
+    public void Applications_csv_carries_the_five_optional_fields_as_enum_names_with_empty_for_null()
+    {
+        Seed();
+        var r = Export(TempRoot());
+
+        var rows = File.ReadAllLines(Path.Combine(r.Folder, "applications.csv"));
+        // Company 009: job type 7, resume variant 5, priority 2, Cold Apply, "Austin, TX" (quoted: it has a comma).
+        var row = rows.Single(l => l.Contains(",Company 009,"));
+        Assert.Contains(",SoftwareEngineer,DataEngineering,MediumPriority,ColdApply,\"Austin, TX\",", row);
+
+        // "Unspecified" priority is stored as null, so it is an empty field (priority is column 7).
+        var table = Csv.Parse(File.ReadAllText(Path.Combine(r.Folder, "applications.csv")));
+        Assert.Equal(10, table.Skip(1).Count(f => f[6] == ""));
+    }
+
+    [Fact]
     public void Writes_exactly_the_three_allowlisted_files()
     {
         Seed();
@@ -239,7 +255,7 @@ public sealed class SnapshotExporterTests : IDisposable
 
         var apps = File.ReadAllLines(Path.Combine(r.Folder, "applications.csv"));
         var events = File.ReadAllLines(Path.Combine(r.Folder, "status_events.csv"));
-        Assert.Equal("application_id,company_name,job_title,date_applied,expected_projected_status,expected_is_no_reply", apps[0]);
+        Assert.Equal("application_id,company_name,job_title,date_applied,job_type,resume_variant,priority,referral_type,location,expected_projected_status,expected_is_no_reply", apps[0]);
         Assert.Equal("event_sequence,application_id,previous_status,new_status,effective_at,recorded_at,source,supersedes_event_sequence,note", events[0]);
         Assert.Equal(183, apps.Length);   // header + 182
     }
@@ -324,7 +340,7 @@ public sealed class SnapshotExporterTests : IDisposable
         var r = Export(TempRoot());
         var m = Manifest(r);
 
-        Assert.Equal("1", m.GetProperty("contract_version").GetString());
+        Assert.Equal("2", m.GetProperty("contract_version").GetString());
         Assert.Equal("synthetic", m.GetProperty("lane").GetString());
         Assert.Equal(r.SnapshotId, m.GetProperty("snapshot_id").GetString());
         Assert.Equal("2026-11-16T00:00:00.000000Z", m.GetProperty("as_of").GetString());
@@ -370,8 +386,8 @@ public sealed class SnapshotExporterTests : IDisposable
         var m = Manifest(r);
         var hashes = m.GetProperty("files").EnumerateArray().ToDictionary(f => f.GetProperty("name").GetString()!, f => f.GetProperty("sha256").GetString()!);
 
-        Assert.Equal("snap-c5d6823fb2ea", r.SnapshotId);
-        Assert.Equal("245097e9d9455839b6a413472169b6a0a99b4e89110083d5ac4b9c3cf1bc807d", hashes["applications.csv"]);
+        Assert.Equal("snap-4f27c803340e", r.SnapshotId);
+        Assert.Equal("46a44e4f60e2615eaacbc534f4019d08d3afe78f47ec7bf0957a3c702f74667c", hashes["applications.csv"]);
         Assert.Equal("670efb86bdd6d99dfb56336b56b9dfbb7a49110b372b8805e154b5500e1708b8", hashes["status_events.csv"]);
         Assert.Equal("8a0349c26a2161328fa825fb13e5fb7970a7193726abadd4230f26ffd7680336",
             m.GetProperty("gold_hash").GetProperty("gold_application_status").GetString());
@@ -418,7 +434,7 @@ public sealed class SnapshotExporterTests : IDisposable
         var m = Manifest(r);
         var hashes = m.GetProperty("files").EnumerateArray().ToDictionary(f => f.GetProperty("name").GetString()!, f => f.GetProperty("sha256").GetString()!);
 
-        var text = $"1\n2026-11-16T00:00:00.000000Z\n{hashes["applications.csv"]}\n{hashes["status_events.csv"]}";
+        var text = $"2\n2026-11-16T00:00:00.000000Z\n{hashes["applications.csv"]}\n{hashes["status_events.csv"]}";
         var expected = "snap-" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(text))).ToLowerInvariant()[..12];
 
         Assert.Equal(expected, r.SnapshotId);

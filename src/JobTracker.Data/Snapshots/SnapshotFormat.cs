@@ -3,16 +3,20 @@ using System.Text.RegularExpressions;
 
 namespace JobTracker.Data.Snapshots;
 
-/// <summary>Formats and identity rules of snapshot contract v1 (docs/snapshot-contract.md).</summary>
+/// <summary>Formats and identity rules of snapshot contract v2 (docs/snapshot-contract.md).</summary>
 public static partial class SnapshotFormat
 {
-    public const string ContractVersion = "1";
+    public const string ContractVersion = "2";
     public const string Lane = "synthetic";
 
     public static readonly string[] ApplicationColumns =
-        ["application_id", "company_name", "job_title", "date_applied", "expected_projected_status", "expected_is_no_reply"];
+    [
+        "application_id", "company_name", "job_title", "date_applied", "job_type", "resume_variant", "priority",
+        "referral_type", "location", "expected_projected_status", "expected_is_no_reply",
+    ];
 
-    public static readonly string[] ApplicationColumnTypes = ["int64", "string", "string", "date", "string", "int"];
+    public static readonly string[] ApplicationColumnTypes =
+        ["int64", "string", "string", "date", "string", "string", "string", "string", "string", "string", "int"];
 
     public static readonly string[] EventColumns =
     [

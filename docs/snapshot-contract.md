@@ -1,8 +1,12 @@
-# Snapshot contract v1
+# Snapshot contract v2
 
 The agreement between the app (C#) and the Databricks pipeline (Spark). Both sides implement the same rules independently, then reconcile. Synthetic data only: the real lane never uses this path.
 
 If this document and the code disagree, the golden fixture (`tests/contract/projection_cases_v1.json`) decides, and the code is fixed.
+
+## What changed from v1
+
+v2 adds the five optional fields to `applications.csv` (after `date_applied`). Event rules, ordering and every measure are unchanged, so the golden fixture stays `projection_cases_v1.json` and the existing gold hashes keep their values. The snapshot id formula now hashes version `2`, so ids differ from v1 ids.
 
 ## Files
 
@@ -16,6 +20,11 @@ A snapshot is a folder `snapshots/<snapshot_id>/` with exactly three files. Noth
 | company_name | string | synthetic names only (`Company 001`) |
 | job_title | string | |
 | date_applied | date | `yyyy-MM-dd` |
+| job_type | string or empty | enum name: `DataAnalyst`, `BiAnalyst`, `BusinessAnalyst`, `DataScientist`, `MlAiEngineer`, `DataEngineer`, `SoftwareEngineer`, `NewGradProgram`, `Other` |
+| resume_variant | string or empty | `DataAnalytics`, `BackendSwe`, `BusinessIntelligence`, `MlDataScience`, `DataEngineering`, `Automation`, `FrontendSwe` |
+| priority | string or empty | `TopPriority`, `MediumPriority`, `LowPriority` |
+| referral_type | string or empty | `NetworkingContact`, `ColdApply` |
+| location | string or empty | free text. Synthetic city names only (`Austin, TX`, `Remote (US)`) |
 | expected_projected_status | string or empty | app result, **reconciliation only** |
 | expected_is_no_reply | int (0/1) | app result, **reconciliation only** |
 
@@ -34,6 +43,8 @@ A snapshot is a folder `snapshots/<snapshot_id>/` with exactly three files. Noth
 | note | string or empty | |
 
 `manifest.json`: see Manifest below.
+
+The five optional fields (job type to location) are empty when the app stores nothing; "Unspecified" in the source data is stored as empty, never as a word. They are descriptive only: they do not change status, ordering or any measure.
 
 The `expected_*` columns exist only so the pipeline can prove it reached the same answer. The pipeline must never use them as input to its own computation.
 
@@ -120,7 +131,7 @@ Deliberate difference from Phase 1: rates are `DECIMAL(9,4)` and the average is 
 
 | Field | Meaning |
 |---|---|
-| contract_version | `"1"` |
+| contract_version | `"2"` |
 | lane | must be `"synthetic"` |
 | snapshot_id | see Identity |
 | as_of | UTC timestamp the statuses were computed at |
