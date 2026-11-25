@@ -19,6 +19,14 @@ def status_rows_for(apps_rows):
     return [[r[0], r[9] or None, r[10], "0", None] for r in apps_rows]
 
 
+# Stored rows as text, deliberately NOT in canonical order, so the verifier must sort them itself.
+DIMENSION_ROWS = [
+    ["priority", "Unspecified", "1", "0", "0", "0", "0", "1", "0.0000", "0.0000", "0.0000", "0.0000", "1.0000"],
+    ["job_type", "DataEngineer", "1", "0", "0", "0", "0", "1", "0.0000", "0.0000", "0.0000", "0.0000", "1.0000"],
+    ["job_type", "DataAnalyst", "1", "1", "0", "0", "1", "0", "1.0000", "0.0000", "0.0000", "1.0000", "0.0000"],
+]
+
+
 def manifest_with_real_hashes(folder):
     """Rewrite the fixture manifest's gold hashes and measures so they match status_rows_for(default_apps)."""
     path = Path(folder) / "manifest.json"
@@ -27,6 +35,8 @@ def manifest_with_real_hashes(folder):
     manifest["gold_hash"]["gold_application_status"] = g.sha256_hex(vr.canonical_status_text(rows).encode("utf-8"))
     funnel = ["3", "1", "0", "0", "1", "1", "0", None, "0.3333", "0.0000", "0.0000", "0.3333", "0.3333"]
     manifest["gold_hash"]["gold_funnel_summary"] = g.sha256_hex(vr.canonical_funnel_text(funnel).encode("utf-8"))
+    manifest["gold_hash"]["gold_funnel_by_dimension"] = g.sha256_hex(vr.canonical_dimension_text(DIMENSION_ROWS).encode("utf-8"))
+    manifest["gold_hash"]["gold_funnel_by_dimension_rows"] = len(DIMENSION_ROWS)
     path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline="\n")
     return manifest, funnel
 
@@ -41,9 +51,11 @@ class FakeWarehouse:
             "recon": [[n, "gold", "1", "1", "true"] for n in names],
             "counts": {"bronze_applications": 3, "bronze_status_events": 5, "bronze_manifest": 1, "silver_applications": 3,
                        "silver_status_events": 5, "silver_rejected_rows": 0, "gold_application_status": 3,
-                       "gold_funnel_summary": 1, "gold_reconciliation": len(names)},
+                       "gold_funnel_summary": 1, "gold_funnel_by_dimension": len(DIMENSION_ROWS),
+                       "gold_reconciliation": len(names)},
             "status": status_rows_for(fx.default_apps()),
             "funnel": [funnel],
+            "dimension": [list(r) for r in DIMENSION_ROWS],
         }
         self.calls = []
 
@@ -59,6 +71,8 @@ class FakeWarehouse:
                 rows = self.data["recon"]
             elif "UNION ALL" in statement:
                 rows = [[t, str(n)] for t, n in self.data["counts"].items()]
+            elif "gold_funnel_by_dimension WHERE" in statement:
+                rows = self.data["dimension"]
             elif "gold_application_status" in statement:
                 rows = self.data["status"]
             else:
@@ -86,6 +100,16 @@ class VerifyTests(unittest.TestCase):
 
         self.assertEqual([], [r for r in results if not r[1]])
         self.assertGreaterEqual(len(results), 14)
+
+    def test_a_changed_dimension_row_fails_the_dimension_hash(self):
+        self.warehouse.data["dimension"][0][2] = "2"
+
+        self.assertIn("hash.gold_funnel_by_dimension", self.failed())
+
+    def test_a_wrong_dimension_row_count_fails(self):
+        self.warehouse.data["counts"]["gold_funnel_by_dimension"] = 99
+
+        self.assertIn("rows.gold_funnel_by_dimension", self.failed())
 
     def test_it_prefers_the_serverless_warehouse(self):
         self.run_verify()

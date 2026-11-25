@@ -123,6 +123,8 @@ Deliberate difference from Phase 1: rates are `DECIMAL(9,4)` and the average is 
 
 `gold_application_status`: `snapshot_id, application_id, status, is_no_reply, problem_count, interview_date`.
 
+`gold_funnel_by_dimension` (new in v2): `snapshot_id, dimension, dimension_value, Applications, Responses, Interviews, Offers, Rejections, No_Replies, Responses_Rate, Interviews_Rate, Offers_Rate, Rejections_Rate, No_Replies_Rate`. One row per value of each of four dimensions: `job_type`, `resume_variant`, `priority`, `referral_type`. A missing value is the word `Unspecified`. Each row uses exactly the overall measure rules, computed over the applications that share that value (no interview-date measures). A value with no applications has no row. For every dimension the `Applications` column adds up to the overall `Applications`. Rates are `DECIMAL(9,4)`.
+
 `gold_reconciliation`: `snapshot_id, check_name, layer, expected, actual, passed`.
 
 ## Manifest
@@ -140,7 +142,7 @@ Deliberate difference from Phase 1: rates are `DECIMAL(9,4)` and the average is 
 | applications | `accepted` (exported) and `rejected` (not exported, with reason counts) |
 | expected_measures | every measure above, computed by the C# projection |
 | expected_problems | total and per-code counts |
-| gold_hash | definition text and the expected `gold_application_status` and `gold_funnel_summary` hashes |
+| gold_hash | definition text, the expected `gold_application_status`, `gold_funnel_summary` and `gold_funnel_by_dimension` hashes, and `gold_funnel_by_dimension_rows` (the row count) |
 
 The exporter rejects (does not export) an application that has no events or a timestamp it cannot write exactly. Projection problems do **not** cause rejection: they are exported and reconciled.
 
@@ -156,6 +158,8 @@ SHA-256 (lowercase hex) of UTF-8 text built like this. It never depends on Delta
 
 - `gold_application_status`: columns `application_id, status, is_no_reply, problem_count, interview_date`; rows sorted by `application_id`; fields joined by TAB; each row ends with LF; null is `\N`; integers base-10; `is_no_reply` is `0` or `1`; dates ISO.
 - `gold_funnel_summary`: one row; fields in the order `Applications, Responses, Interviews, Offers, Rejections, No_Replies, Rows_with_interview_date, Avg_Days_to_Interview, Responses_Rate, Interviews_Rate, Offers_Rate, Rejections_Rate, No_Replies_Rate`; counts base-10; rates as fixed 4-decimal text; the average as fixed 2-decimal text; null is `\N`; TAB-joined; ends with LF.
+
+- `gold_funnel_by_dimension`: columns `dimension, dimension_value, Applications, Responses, Interviews, Offers, Rejections, No_Replies, Responses_Rate, Interviews_Rate, Offers_Rate, Rejections_Rate, No_Replies_Rate`; rows in the fixed dimension order above, then by `dimension_value` as plain text (ordinal, code-point order); counts base-10; rates as fixed 4-decimal text; fields TAB-joined; each row ends with LF.
 
 The C# exporter computes the expected hashes into the manifest. The pipeline must reproduce them, and a rerun must reproduce the same value.
 

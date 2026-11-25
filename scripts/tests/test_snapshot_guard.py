@@ -120,6 +120,15 @@ class ManifestTests(GuardTestCase):
             m["expected_problems"]["total"] = 5
         self.assertRefused(self.edit(change), "problem")
 
+    def test_a_bad_dimension_hash_or_row_count_is_refused(self):
+        for key, bad in [("gold_funnel_by_dimension", "ZZ"), ("gold_funnel_by_dimension_rows", -1),
+                         ("gold_funnel_by_dimension_rows", "8"), ("gold_funnel_by_dimension_rows", True)]:
+            with self.subTest(key=key, bad=bad):
+                def change(m, key=key, bad=bad):
+                    m["gold_hash"][key] = bad
+                self.assertRefused(self.edit(change), "gold_hash")
+                self.setUp()
+
     def test_a_non_hex_gold_hash_is_refused(self):
         def change(m):
             m["gold_hash"]["gold_funnel_summary"] = "not-a-hash"

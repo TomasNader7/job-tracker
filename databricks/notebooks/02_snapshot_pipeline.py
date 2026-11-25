@@ -22,7 +22,7 @@ from decimal import Decimal
 from pyspark.sql import Window as W
 from pyspark.sql import functions as F
 
-CONTRACT_VERSION = "1"
+CONTRACT_VERSION = "2"
 CATALOG, SCHEMA = "workspace", "job_tracker_p3"
 LANDING_BASE = "/Volumes/workspace/job_tracker_demo/landing/snapshots"
 SAFE_ID = re.compile(r"[a-z0-9][a-z0-9-]{2,63}")
@@ -40,7 +40,16 @@ TRANSITIONS = [
     ("Interviewed", "InterviewScheduled"), ("Interviewed", "Rejected"), ("Interviewed", "Accepted"), ("Interviewed", "Withdrawn"),
     ("Rejected", "InterviewScheduled"),
 ]
-APPLICATION_COLUMNS = ["application_id", "company_name", "job_title", "date_applied", "expected_projected_status", "expected_is_no_reply"]
+APPLICATION_COLUMNS = ["application_id", "company_name", "job_title", "date_applied", "job_type", "resume_variant", "priority",
+                       "referral_type", "location", "expected_projected_status", "expected_is_no_reply"]
+# Enum names of the app. The guard (scripts/snapshot_guard.py) and a test keep these in step with the C# enums.
+JOB_TYPES = ["DataAnalyst", "BiAnalyst", "BusinessAnalyst", "DataScientist", "MlAiEngineer", "DataEngineer",
+             "SoftwareEngineer", "NewGradProgram", "Other"]
+RESUME_VARIANTS = ["DataAnalytics", "BackendSwe", "BusinessIntelligence", "MlDataScience", "DataEngineering", "Automation", "FrontendSwe"]
+PRIORITIES = ["TopPriority", "MediumPriority", "LowPriority"]
+REFERRAL_TYPES = ["NetworkingContact", "ColdApply"]
+DIMENSIONS = [("job_type", JOB_TYPES), ("resume_variant", RESUME_VARIANTS), ("priority", PRIORITIES), ("referral_type", REFERRAL_TYPES)]
+UNSPECIFIED = "Unspecified"
 EVENT_COLUMNS = ["event_sequence", "application_id", "previous_status", "new_status", "effective_at", "recorded_at",
                  "source", "supersedes_event_sequence", "note"]
 PROBLEM_CODES = ["ILLEGAL_FIRST", "FIRST_PREVIOUS_NOT_NULL", "ILLEGAL_TRANSITION", "PREVIOUS_MISMATCH", "CORRECTION_TARGET_INVALID"]
@@ -93,7 +102,11 @@ def split_applications(bronze):
     date_ok = F.expr("try_to_timestamp(date_applied, 'yyyy-MM-dd')").isNotNull()
     status_ok = F.col("expected_projected_status").isNull() | _ok(F.col("expected_projected_status").isin(STATUSES))
     flag_ok = _ok(F.col("expected_is_no_reply").isin("0", "1"))
-    reason = F.when(~key_ok, "BAD_KEY").when(~date_ok, "BAD_DATE").when(~status_ok, "BAD_STATUS").when(~flag_ok, "BAD_FLAG")
+    field_ok = F.lit(True)
+    for column, allowed in DIMENSIONS:
+        field_ok = field_ok & (F.col(column).isNull() | _ok(F.col(column).isin(allowed)))
+    reason = (F.when(~key_ok, "BAD_KEY").when(~date_ok, "BAD_DATE").when(~status_ok, "BAD_STATUS").when(~flag_ok, "BAD_FLAG")
+              .when(~field_ok, "BAD_FIELD"))
     d = d.withColumn("_reason", reason)
     duplicate = F.count(F.lit(1)).over(W.partitionBy("application_id")) > 1
     d = d.withColumn("_reason", F.when(F.col("_reason").isNull() & duplicate, "DUPLICATE_KEY").otherwise(F.col("_reason")))
@@ -102,6 +115,7 @@ def split_applications(bronze):
         F.expr("try_cast(application_id AS BIGINT)").alias("application_id"),
         "company_name", "job_title",
         F.to_date(F.expr("try_to_timestamp(date_applied, 'yyyy-MM-dd')")).alias("date_applied"),
+        "job_type", "resume_variant", "priority", "referral_type", "location",
         F.col("expected_projected_status"),
         F.expr("try_cast(expected_is_no_reply AS INT)").alias("expected_is_no_reply"))
     rejected = d.where(F.col("_reason").isNotNull()).select(
@@ -246,6 +260,39 @@ def build_funnel(gold_status, silver_applications):
         rate("Rejections").alias("Rejections_Rate"), rate("No_Replies").alias("No_Replies_Rate"))
 
 
+def build_funnel_by_dimension(gold_status, silver_applications):
+    """The funnel per job type, resume variant, priority and referral type. A missing value is 'Unspecified'.
+    Same measure rules as build_funnel, minus the interview-date measures. Groups with no applications are left out."""
+    d = gold_status.join(silver_applications.select("application_id", *[c for c, _ in DIMENSIONS]), "application_id")
+    is_app = F.col("status").isNotNull() & (F.col("status") != "NotStarted")
+
+    def count_if(cond):
+        return F.coalesce(F.sum(F.when(cond, 1).otherwise(0)), F.lit(0)).cast("long")
+
+    def rate(name):
+        return F.when(F.col("Applications") > 0,
+                      F.round(F.col(name).cast("decimal(20,6)") / F.col("Applications").cast("decimal(20,6)"), 4)
+                      ).cast("decimal(9,4)")
+
+    parts = []
+    for column, _ in DIMENSIONS:
+        grouped = d.groupBy(F.lit(column).alias("dimension"), F.coalesce(F.col(column), F.lit(UNSPECIFIED)).alias("dimension_value")).agg(
+            count_if(is_app).alias("Applications"),
+            count_if(F.col("status").isin("Rejected", "InterviewScheduled", "Interviewed", "Accepted")).alias("Responses"),
+            count_if(F.col("status").isin("InterviewScheduled", "Interviewed", "Accepted")).alias("Interviews"),
+            count_if(F.col("status") == "Accepted").alias("Offers"),
+            count_if(F.col("status") == "Rejected").alias("Rejections"),
+            count_if(is_app & (F.col("is_no_reply") == 1)).alias("No_Replies"))
+        parts.append(grouped.where(F.col("Applications") > 0).select(
+            "dimension", "dimension_value", "Applications", "Responses", "Interviews", "Offers", "Rejections", "No_Replies",
+            rate("Responses").alias("Responses_Rate"), rate("Interviews").alias("Interviews_Rate"), rate("Offers").alias("Offers_Rate"),
+            rate("Rejections").alias("Rejections_Rate"), rate("No_Replies").alias("No_Replies_Rate")))
+    out = parts[0]
+    for part in parts[1:]:
+        out = out.unionByName(part)
+    return out
+
+
 # COMMAND ----------
 
 # ---------- canonical content hashes (never Delta files, metadata or unspecified row order) ----------
@@ -285,6 +332,17 @@ def funnel_strings(row):
 def canonical_funnel_text(row):
     s = funnel_strings(row)
     return "\t".join(s[k] for k in FUNNEL_ORDER) + "\n"
+
+
+def canonical_dimension_text(rows):
+    """rows: dicts as built by build_funnel_by_dimension. Sorted by the fixed dimension order, then by value as plain text."""
+    order = {name: i for i, (name, _) in enumerate(DIMENSIONS)}
+    lines = []
+    for r in sorted(rows, key=lambda r: (order[r["dimension"]], r["dimension_value"])):
+        fields = [r["dimension"], r["dimension_value"]] + [str(int(r[k])) for k in MEASURE_COUNTS[:6]] \
+            + [_fixed(r[k], 4) for k in MEASURE_RATES]
+        lines.append("\t".join(fields) + "\n")
+    return "".join(lines)
 
 
 # COMMAND ----------
@@ -367,18 +425,23 @@ def run_selftest(spark):
     results_out.append(("selftest.cases_passed", passed_cases == len(golden["cases"]), f"{passed_cases} of {len(golden['cases'])}"))
 
     # validators: each bad row must be rejected with the right reason code
+    ok5 = ["DataAnalyst", "DataAnalytics", "TopPriority", "ColdApply", "Austin, TX"]   # five fine optional fields
     bad_apps = rows_to_df(spark, APPLICATION_COLUMNS + ["_row_number"], [
-        ["1", "Company 001", "Data Analyst", "2026-10-01", "Applied", "0", "1"],      # fine
-        ["x", "Company 002", "Data Analyst", "2026-10-01", "Applied", "0", "2"],      # BAD_KEY
-        ["3", "Company 003", "Data Analyst", "2026-02-30", "Applied", "0", "3"],      # BAD_DATE
-        ["4", "Company 004", "Data Analyst", "2026-10-01", "Hired", "0", "4"],        # BAD_STATUS
-        ["5", "Company 005", "Data Analyst", "2026-10-01", "Applied", "2", "5"],      # BAD_FLAG
-        ["6", "Company 006", "Data Analyst", "2026-10-01", "", "0", "6"],             # fine (empty status = null)
-        ["7", "Company 007", "Data Analyst", "2026-10-01", "Applied", "0", "7"],      # DUPLICATE_KEY
-        ["7", "Company 007", "Data Analyst", "2026-10-02", "Applied", "0", "8"]])     # DUPLICATE_KEY
+        ["1", "Company 001", "Data Analyst", "2026-10-01"] + ok5 + ["Applied", "0", "1"],      # fine
+        ["x", "Company 002", "Data Analyst", "2026-10-01"] + ok5 + ["Applied", "0", "2"],      # BAD_KEY
+        ["3", "Company 003", "Data Analyst", "2026-02-30"] + ok5 + ["Applied", "0", "3"],      # BAD_DATE
+        ["4", "Company 004", "Data Analyst", "2026-10-01"] + ok5 + ["Hired", "0", "4"],        # BAD_STATUS
+        ["5", "Company 005", "Data Analyst", "2026-10-01"] + ok5 + ["Applied", "2", "5"],      # BAD_FLAG
+        ["6", "Company 006", "Data Analyst", "2026-10-01"] + [""] * 5 + ["", "0", "6"],        # fine (empty = null)
+        ["7", "Company 007", "Data Analyst", "2026-10-01"] + ok5 + ["Applied", "0", "7"],      # DUPLICATE_KEY
+        ["7", "Company 007", "Data Analyst", "2026-10-02"] + ok5 + ["Applied", "0", "8"],      # DUPLICATE_KEY
+        ["9", "Company 009", "Data Analyst", "2026-10-01", "Data Analyst"] + ok5[1:] + ["Applied", "0", "9"],   # BAD_FIELD (label, not enum name)
+        ["10", "Company 010", "Data Analyst", "2026-10-01", "DataAnalyst", "DataAnalytics", "Unspecified", "ColdApply",
+         "Austin, TX", "Applied", "0", "10"]])                                                  # BAD_FIELD (Unspecified is empty, not a word)
     valid_apps, rejected_apps = split_applications(bad_apps)
     reasons = {r["source_row"]: r["reason_code"] for r in rejected_apps.collect()}
-    want_reasons = {"2": "BAD_KEY", "3": "BAD_DATE", "4": "BAD_STATUS", "5": "BAD_FLAG", "7": "DUPLICATE_KEY", "8": "DUPLICATE_KEY"}
+    want_reasons = {"2": "BAD_KEY", "3": "BAD_DATE", "4": "BAD_STATUS", "5": "BAD_FLAG", "7": "DUPLICATE_KEY", "8": "DUPLICATE_KEY",
+                    "9": "BAD_FIELD", "10": "BAD_FIELD"}
     results_out.append(("selftest.application_validation", {str(k): v for k, v in reasons.items()} == want_reasons
                         and valid_apps.count() == 2, f"reasons {reasons}"))
 
@@ -431,6 +494,9 @@ def build_reconciliation(facts, manifest):
     check("gold.application_status.rows_equal_silver_applications", "gold", facts["silver_applications"], facts["gold_status_rows"])
     check("gold.application_status.distinct_ids_equal_rows", "gold", facts["gold_status_rows"], facts["gold_status_distinct"])
     check("gold.funnel_summary.rows", "gold", 1, facts["gold_funnel_rows"])
+    check("gold.funnel_by_dimension.rows", "gold", manifest["gold_hash"]["gold_funnel_by_dimension_rows"], facts["dimension_rows"])
+    for name, _ in DIMENSIONS:
+        check(f"gold.funnel_by_dimension.applications_sum.{name}", "gold", exp["Applications"], facts["dimension_sums"].get(name, 0))
     for name in FUNNEL_ORDER:
         want = exp[name] if exp[name] is not None else NULL_TEXT
         check(f"gold.measure.{name}", "gold", want, facts["funnel"][name])
@@ -441,6 +507,7 @@ def build_reconciliation(facts, manifest):
         check(f"gold.problems.{code}", "gold", problems["by_code"][code], facts["problem_by_code"].get(code, 0))
     check("gold.hash.application_status", "gold", manifest["gold_hash"]["gold_application_status"], facts["hash_status"])
     check("gold.hash.funnel_summary", "gold", manifest["gold_hash"]["gold_funnel_summary"], facts["hash_funnel"])
+    check("gold.hash.funnel_by_dimension", "gold", manifest["gold_hash"]["gold_funnel_by_dimension"], facts["hash_dimension"])
     check("selftest.all_checks_passed", "selftest", "True", facts["selftest_ok"])
     return rows
 
@@ -561,6 +628,9 @@ stored_status = spark.table(table_name("gold_application_status")).where(F.col("
 funnel = build_funnel(stored_status.drop("snapshot_id"), silver_applications.drop("snapshot_id"))
 write_snapshot_table(spark, funnel.withColumn("_gold_at", F.current_timestamp()), "gold_funnel_summary", snapshot_id)
 
+by_dimension = build_funnel_by_dimension(stored_status.drop("snapshot_id"), silver_applications.drop("snapshot_id"))
+write_snapshot_table(spark, by_dimension, "gold_funnel_by_dimension", snapshot_id)
+
 # COMMAND ----------
 
 # Measure everything from the STORED tables, then reconcile.
@@ -568,6 +638,11 @@ stored_status = spark.table(table_name("gold_application_status")).where(F.col("
 stored_funnel = spark.table(table_name("gold_funnel_summary")).where(F.col("snapshot_id") == snapshot_id)
 status_rows = [r.asDict() for r in stored_status.collect()]
 funnel_rows = stored_funnel.collect()
+stored_dimension = spark.table(table_name("gold_funnel_by_dimension")).where(F.col("snapshot_id") == snapshot_id)
+dimension_rows = [r.asDict() for r in stored_dimension.collect()]
+dimension_sums = {}
+for r in dimension_rows:
+    dimension_sums[r["dimension"]] = dimension_sums.get(r["dimension"], 0) + int(r["Applications"])
 
 compare = silver_applications.select("application_id", "expected_projected_status", "expected_is_no_reply").join(
     stored_status.select("application_id", "status", "is_no_reply"), "application_id", "left")
@@ -592,6 +667,9 @@ facts = {
     "problem_by_code": problem_by_code,
     "hash_status": sha256_text(canonical_status_text(status_rows)),
     "hash_funnel": sha256_text(canonical_funnel_text(funnel_rows[0].asDict())) if funnel_rows else "missing",
+    "dimension_rows": len(dimension_rows),
+    "dimension_sums": dimension_sums,
+    "hash_dimension": sha256_text(canonical_dimension_text(dimension_rows)),
     "selftest_ok": selftest_ok,
 }
 
@@ -614,4 +692,5 @@ dbutils.notebook.exit(json.dumps({
     "failed": 0,
     "gold_hash_application_status": facts["hash_status"],
     "gold_hash_funnel_summary": facts["hash_funnel"],
+    "gold_hash_funnel_by_dimension": facts["hash_dimension"],
 }))

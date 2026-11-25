@@ -137,6 +137,13 @@ class SparkPipelineTests(unittest.TestCase):
         self.assertEqual(manifest["gold_hash"]["gold_application_status"], ns["sha256_text"](ns["canonical_status_text"](status_rows)))
         self.assertEqual(manifest["gold_hash"]["gold_funnel_summary"], ns["sha256_text"](ns["canonical_funnel_text"](funnel.collect()[0].asDict())))
 
+        # the by-dimension table: same row count and the same canonical hash as the C# exporter computed
+        dimension = ns["build_funnel_by_dimension"](gold, apps)
+        dimension_rows = [r.asDict() for r in dimension.collect()]
+        self.assertEqual(manifest["gold_hash"]["gold_funnel_by_dimension_rows"], len(dimension_rows))
+        self.assertEqual(manifest["gold_hash"]["gold_funnel_by_dimension"],
+                         ns["sha256_text"](ns["canonical_dimension_text"](dimension_rows)))
+
         # the status Spark computed from events equals the status the app projected
         with open(folder / "applications.csv", encoding="utf-8", newline="") as handle:
             expected = {int(r["application_id"]): (r["expected_projected_status"] or None, int(r["expected_is_no_reply"]))
@@ -158,8 +165,8 @@ class SparkPipelineTests(unittest.TestCase):
         with open(folder / "applications.csv", encoding="utf-8", newline="") as handle:
             rows = list(csv.reader(handle))
         columns = rows[0]
-        damaged = [r[:4] + ["Hired", "7"] if i else r for i, r in enumerate(rows)]
-        original = [(r[0], r[4], r[5]) for r in rows[1:]]
+        damaged = [r[:9] + ["Hired", "7"] if i else r for i, r in enumerate(rows)]
+        original = [(r[0], r[9], r[10]) for r in rows[1:]]
         self.assertNotEqual(original[0][1:], ("Hired", "7"))
 
         data = [row + [str(i)] for i, row in enumerate(damaged[1:], start=2)]
@@ -220,6 +227,31 @@ class SparkPipelineTests(unittest.TestCase):
                "No_Replies_Rate": Decimal("0.0000")}
         self.assertEqual("2\t1\t1\t0\t0\t0\t1\t21.00\t0.5000\t0.5000\t0.0000\t0.0000\t0.0000\n", ns["canonical_funnel_text"](row))
 
+    def test_dimension_funnel_groups_null_as_unspecified_and_drops_groups_without_applications(self):
+        ns, spark = self.ns, self.spark
+        from pyspark.sql import functions as F
+        apps = ns["rows_to_df"](spark, ["application_id", "date_applied", "job_type", "resume_variant", "priority", "referral_type"], [
+            ["1", "2026-10-01", "DataAnalyst", None, "TopPriority", "ColdApply"],
+            ["2", "2026-10-01", "DataAnalyst", None, None, "NetworkingContact"],
+            ["3", "2026-10-01", "Other", None, None, None]])    # app 3 is NotStarted: no application, so no group
+        apps = apps.select(F.col("application_id").cast("long"), F.to_date("date_applied").alias("date_applied"),
+                           "job_type", "resume_variant", "priority", "referral_type")
+        gold = spark.sql("SELECT 1L AS application_id, 'Rejected' AS status, 0 AS is_no_reply, 0 AS problem_count, CAST(NULL AS DATE) AS interview_date "
+                         "UNION ALL SELECT 2L, 'Applied', 1, 0, CAST(NULL AS DATE) "
+                         "UNION ALL SELECT 3L, 'NotStarted', 0, 0, CAST(NULL AS DATE)")
+
+        rows = [r.asDict() for r in ns["build_funnel_by_dimension"](gold, apps).collect()]
+        text = ns["canonical_dimension_text"](rows)
+
+        lines = text.splitlines()
+        self.assertEqual("job_type\tDataAnalyst\t2\t1\t0\t0\t1\t1\t0.5000\t0.0000\t0.0000\t0.5000\t0.5000", lines[0])
+        self.assertEqual(
+            ["job_type", "resume_variant", "priority", "priority", "referral_type", "referral_type"],
+            [line.split("\t")[0] for line in lines])
+        self.assertIn("resume_variant\tUnspecified\t2\t", text)
+        self.assertNotIn("\tOther\t", text)
+        self.assertTrue(text.endswith("\n"))
+
     def test_reconciliation_flags_a_wrong_value(self):
         ns = self.ns
         folder = _newest_snapshot()
@@ -251,6 +283,9 @@ class SparkPipelineTests(unittest.TestCase):
             "problem_total": manifest["expected_problems"]["total"],
             "problem_by_code": dict(manifest["expected_problems"]["by_code"]),
             "hash_status": manifest["gold_hash"]["gold_application_status"], "hash_funnel": manifest["gold_hash"]["gold_funnel_summary"],
+            "dimension_rows": manifest["gold_hash"]["gold_funnel_by_dimension_rows"],
+            "dimension_sums": {name: measures["Applications"] for name in ("job_type", "resume_variant", "priority", "referral_type")},
+            "hash_dimension": manifest["gold_hash"]["gold_funnel_by_dimension"],
             "selftest_ok": True,
         }
 

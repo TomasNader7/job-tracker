@@ -71,7 +71,8 @@ def default_manifest(snapshot_id, apps_bytes, events_bytes, n_apps, n_events):
         },
         "expected_problems": {"total": 0, "by_code": {c: 0 for c in g.PROBLEM_CODES}},
         "gold_hash": {"algorithm": "sha256", "definition": "docs/snapshot-contract.md, section Canonical gold-content hash",
-                      "gold_application_status": "a" * 64, "gold_funnel_summary": "b" * 64},
+                      "gold_application_status": "a" * 64, "gold_funnel_summary": "b" * 64,
+                      "gold_funnel_by_dimension": "c" * 64, "gold_funnel_by_dimension_rows": 8},
     }
 
 

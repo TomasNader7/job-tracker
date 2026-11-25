@@ -20,12 +20,12 @@ import upload_snapshot as up
 
 SCHEMA = "workspace.job_tracker_p3"
 TABLES = ["bronze_applications", "bronze_status_events", "bronze_manifest", "silver_applications", "silver_status_events",
-          "silver_rejected_rows", "gold_application_status", "gold_funnel_summary", "gold_reconciliation"]
+          "silver_rejected_rows", "gold_application_status", "gold_funnel_summary", "gold_funnel_by_dimension", "gold_reconciliation"]
 FUNNEL_ORDER = ["Applications", "Responses", "Interviews", "Offers", "Rejections", "No_Replies", "Rows_with_interview_date",
                 "Avg_Days_to_Interview", "Responses_Rate", "Interviews_Rate", "Offers_Rate", "Rejections_Rate", "No_Replies_Rate"]
 REQUIRED_CHECKS = ["source.applications.sha256", "source.status_events.sha256", "silver.rejected_rows_total",
                    "gold.status_mismatches_vs_expected_projected_status", "gold.problems.total", "gold.hash.application_status",
-                   "gold.hash.funnel_summary", "selftest.all_checks_passed", "gold.measure.Applications", "gold.measure.No_Replies_Rate"]
+                   "gold.hash.funnel_summary", "gold.hash.funnel_by_dimension", "selftest.all_checks_passed", "gold.measure.Applications", "gold.measure.No_Replies_Rate"]
 NULL_TEXT = "\\N"
 
 
@@ -35,6 +35,19 @@ def canonical_status_text(rows) -> str:
     for app_id, status, no_reply, problems, idate in sorted(rows, key=lambda r: int(r[0])):
         lines.append("\t".join([str(int(app_id)), status if status is not None else NULL_TEXT, str(int(no_reply)),
                                 str(int(problems)), idate if idate is not None else NULL_TEXT]) + "\n")
+    return "".join(lines)
+
+
+DIMENSION_ORDER = ["job_type", "resume_variant", "priority", "referral_type"]
+DIMENSION_COLUMNS = ["dimension", "dimension_value", "Applications", "Responses", "Interviews", "Offers", "Rejections",
+                     "No_Replies", "Responses_Rate", "Interviews_Rate", "Offers_Rate", "Rejections_Rate", "No_Replies_Rate"]
+
+
+def canonical_dimension_text(rows) -> str:
+    """rows: the 13 DIMENSION_COLUMNS as text. Fixed dimension order, then value as plain text. Contract format."""
+    lines = []
+    for row in sorted(rows, key=lambda r: (DIMENSION_ORDER.index(r[0]), r[1])):
+        lines.append("\t".join(v if v is not None else NULL_TEXT for v in row) + "\n")
     return "".join(lines)
 
 
@@ -101,6 +114,7 @@ def verify(folder, reader, generator=up.GENERATOR) -> list:
     expected_counts = {"bronze_applications": files["applications.csv"]["rows"], "bronze_status_events": files["status_events.csv"]["rows"],
                        "bronze_manifest": 1, "silver_applications": accepted, "silver_status_events": files["status_events.csv"]["rows"],
                        "silver_rejected_rows": 0, "gold_application_status": accepted, "gold_funnel_summary": 1,
+                       "gold_funnel_by_dimension": manifest["gold_hash"]["gold_funnel_by_dimension_rows"],
                        "gold_reconciliation": len(recon)}
     for table, want in expected_counts.items():
         add(f"rows.{table}", counts.get(table) == want, f"expected {want}, found {counts.get(table)}")
@@ -126,6 +140,13 @@ def verify(folder, reader, generator=up.GENERATOR) -> list:
     add("funnel.equals_manifest_measures", list(row) == want, f"stored {list(row)}")
     funnel_hash = guard.sha256_hex(canonical_funnel_text(row).encode("utf-8"))
     add("hash.gold_funnel_summary", funnel_hash == manifest["gold_hash"]["gold_funnel_summary"], f"sha256 {funnel_hash}")
+
+    # 5. the stored by-dimension table, re-hashed here
+    dimension_sql = ", ".join(f"CAST({c} AS STRING)" for c in DIMENSION_COLUMNS)
+    dimension = reader.sql(f"SELECT {dimension_sql} FROM {SCHEMA}.gold_funnel_by_dimension WHERE {where} "
+                           f"ORDER BY dimension, dimension_value")
+    dimension_hash = guard.sha256_hex(canonical_dimension_text(dimension).encode("utf-8"))
+    add("hash.gold_funnel_by_dimension", dimension_hash == manifest["gold_hash"]["gold_funnel_by_dimension"], f"sha256 {dimension_hash}")
     return out
 
 

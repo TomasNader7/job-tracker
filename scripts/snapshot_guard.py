@@ -265,14 +265,17 @@ def _check_manifest_shape(manifest: dict) -> None:
         raise GuardError("expected_problems counts are inconsistent")
 
     gold = manifest["gold_hash"]
-    _check_keys(gold, ["algorithm", "definition", "gold_application_status", "gold_funnel_summary"], "manifest gold_hash")
+    _check_keys(gold, ["algorithm", "definition", "gold_application_status", "gold_funnel_summary",
+                       "gold_funnel_by_dimension", "gold_funnel_by_dimension_rows"], "manifest gold_hash")
     if gold["algorithm"] != "sha256":
         raise GuardError("gold_hash algorithm must be sha256")
     if not isinstance(gold["definition"], str) or not re.fullmatch(r"[A-Za-z0-9 ,./_-]{1,200}", gold["definition"]):
         raise GuardError("gold_hash definition has unexpected characters")
-    for key in ("gold_application_status", "gold_funnel_summary"):
+    for key in ("gold_application_status", "gold_funnel_summary", "gold_funnel_by_dimension"):
         if not isinstance(gold[key], str) or not HEX64.fullmatch(gold[key]):
             raise GuardError(f"gold_hash {key} must be 64 lowercase hex characters")
+    if not _is_int(gold["gold_funnel_by_dimension_rows"]) or gold["gold_funnel_by_dimension_rows"] < 0:
+        raise GuardError("gold_hash gold_funnel_by_dimension_rows must be a whole number, zero or more")
 
 
 def validate_snapshot(folder, generator_path) -> dict:
