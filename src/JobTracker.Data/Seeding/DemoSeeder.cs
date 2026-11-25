@@ -1,4 +1,5 @@
 using System.Globalization;
+using JobTracker.Data.Importing;
 using JobTracker.Domain;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +7,8 @@ namespace JobTracker.Data.Seeding;
 
 /// <summary>One application from the Phase 0 synthetic file.</summary>
 public sealed record SeedRow(int CsvId, string Company, string Title, DateOnly DateApplied, string Status,
-    DateOnly? InterviewDate);
+    DateOnly? InterviewDate, JobType? JobType = null, string? Location = null, ResumeVariant? ResumeVariant = null,
+    ReferralType? ReferralType = null, Priority? Priority = null);
 
 public sealed record SeedResult(int Applications, int Events, int Corrections, int ProblemCount);
 
@@ -25,6 +27,12 @@ public sealed class DemoSeeder(string requiredDatabase = DemoDatabaseGuard.DemoD
         var statusNames = Csv.Parse(File.ReadAllText(Path.Combine(csvDir, "dim_status.csv")))
             .Skip(1).ToDictionary(r => r[0], r => r[1]);
 
+        Dictionary<string, string> Names(string file) =>
+            Csv.Parse(File.ReadAllText(Path.Combine(csvDir, file))).Skip(1).ToDictionary(r => r[0], r => r[1]);
+        var jobTypeNames = Names("dim_job_type.csv");
+        var resumeNames = Names("dim_resume_variant.csv");
+        var priorityNames = Names("dim_priority.csv");
+
         var table = Csv.Parse(File.ReadAllText(Path.Combine(csvDir, "fact_application.csv")));
         var col = table[0].Select((name, i) => (name, i)).ToDictionary(x => x.name, x => x.i);
 
@@ -40,11 +48,20 @@ public sealed class DemoSeeder(string requiredDatabase = DemoDatabaseGuard.DemoD
                 int.Parse(r[col["application_id"]], CultureInfo.InvariantCulture),
                 r[col["company_name"]], r[col["job_title"]],
                 DateOnly.ParseExact(applied, "yyyy-MM-dd", CultureInfo.InvariantCulture), status,
-                interview == "" ? null : DateOnly.ParseExact(interview, "yyyy-MM-dd", CultureInfo.InvariantCulture)));
+                interview == "" ? null : DateOnly.ParseExact(interview, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                Lookup(TrackerCsvParser.JobTypes, jobTypeNames[r[col["job_type_key"]]]),
+                r[col["location"]] == "" ? null : r[col["location"]],
+                Lookup(TrackerCsvParser.ResumeVariants, resumeNames[r[col["resume_variant_key"]]]),
+                Lookup(TrackerCsvParser.ReferralTypes, r[col["referral_type"]]),
+                Lookup(TrackerCsvParser.Priorities, priorityNames[r[col["priority_key"]]])));
         }
 
         return rows.OrderBy(r => r.CsvId).ToList();
     }
+
+    /// <summary>Label to enum. An empty label or "Unspecified" means the app stores nothing (null).</summary>
+    private static T? Lookup<T>(Dictionary<string, T> labels, string text) where T : struct =>
+        text is "" or "Unspecified" ? null : labels[text];
 
     public SeedResult Seed(JobTrackerDbContext db, IReadOnlyList<SeedRow> rows, DateOnly asOf)
     {
@@ -60,7 +77,8 @@ public sealed class DemoSeeder(string requiredDatabase = DemoDatabaseGuard.DemoD
         foreach (var row in rows.OrderBy(r => r.CsvId))
         {
             clock.Set(row.DateApplied);
-            var app = service.AddApplication(row.Company, row.Title, row.DateApplied);
+            var app = service.AddApplication(row.Company, row.Title, row.DateApplied, row.JobType, row.ResumeVariant,
+                row.Priority, row.ReferralType, row.Location);
             var mix = Mix(row.CsvId);
 
             switch (row.Status)

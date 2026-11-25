@@ -32,7 +32,7 @@ public static class TrackerCsvParser
     ];
 
     // The words the reader writes. A test checks that every label the app shows is in these tables.
-    private static readonly Dictionary<string, JobType> JobTypes = new(StringComparer.Ordinal)
+    internal static readonly Dictionary<string, JobType> JobTypes = new(StringComparer.Ordinal)
     {
         ["Data Analyst"] = JobType.DataAnalyst,
         ["BI Analyst"] = JobType.BiAnalyst,
@@ -45,7 +45,7 @@ public static class TrackerCsvParser
         ["Other"] = JobType.Other,
     };
 
-    private static readonly Dictionary<string, ResumeVariant> ResumeVariants = new(StringComparer.Ordinal)
+    internal static readonly Dictionary<string, ResumeVariant> ResumeVariants = new(StringComparer.Ordinal)
     {
         ["Data Analytics"] = ResumeVariant.DataAnalytics,
         ["Backend SWE"] = ResumeVariant.BackendSwe,
@@ -56,14 +56,14 @@ public static class TrackerCsvParser
         ["Frontend SWE"] = ResumeVariant.FrontendSwe,
     };
 
-    private static readonly Dictionary<string, Priority> Priorities = new(StringComparer.Ordinal)
+    internal static readonly Dictionary<string, Priority> Priorities = new(StringComparer.Ordinal)
     {
         ["Top Priority"] = Priority.TopPriority,
         ["Medium Priority"] = Priority.MediumPriority,
         ["Low Priority"] = Priority.LowPriority,
     };
 
-    private static readonly Dictionary<string, ReferralType> ReferralTypes = new(StringComparer.Ordinal)
+    internal static readonly Dictionary<string, ReferralType> ReferralTypes = new(StringComparer.Ordinal)
     {
         ["Networking Contact"] = ReferralType.NetworkingContact,
         ["Cold Apply"] = ReferralType.ColdApply,
