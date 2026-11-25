@@ -79,6 +79,9 @@ namespace JobTracker.Data.Migrations
                     b.Property<int>("ApplicationId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("DateKnown")
+                        .HasColumnType("bit");
+
                     b.Property<DateTimeOffset>("EffectiveAt")
                         .HasColumnType("datetimeoffset");
 

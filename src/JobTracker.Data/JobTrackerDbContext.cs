@@ -29,6 +29,9 @@ public sealed class JobTrackerDbContext(DbContextOptions<JobTrackerDbContext> op
             e.Property(x => x.Source).HasConversion<string>().HasMaxLength(30);
             e.Property(x => x.SupersedesEventId);
             e.Property(x => x.Note).HasMaxLength(1000);
+            // False only for imported events with no real date. No model default on purpose (EF would treat false as unset);
+            // the migration gives existing rows true.
+            e.Property(x => x.DateKnown);
 
             // Every event must belong to a real application, and a correction must point at a real event.
             // Restrict = the database refuses to delete a row that history still points at.

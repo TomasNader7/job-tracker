@@ -28,10 +28,17 @@ public sealed record StatusEvent
     public long? SupersedesEventId { get; }
     public string? Note { get; }
 
+    /// <summary>
+    /// False only for an imported event whose real date the tracker never had. Its <see cref="EffectiveAt"/>
+    /// is then a placeholder that keeps the events in order and must never be shown or analysed as a real date.
+    /// </summary>
+    public bool DateKnown { get; }
+
     private StatusEvent(long id, int applicationId, ApplicationStatus? previousStatus, ApplicationStatus newStatus,
         DateTimeOffset effectiveAt, DateTimeOffset recordedAt, EventSource source,
-        long? supersedesEventId, string? note)
+        long? supersedesEventId, string? note, bool dateKnown)
     {
+        DateKnown = dateKnown;
         Id = id;
         ApplicationId = applicationId;
         PreviousStatus = previousStatus;
@@ -45,8 +52,11 @@ public sealed record StatusEvent
 
     public static StatusEvent Create(long id, int applicationId, ApplicationStatus? previousStatus,
         ApplicationStatus newStatus, DateTimeOffset effectiveAt, DateTimeOffset recordedAt,
-        EventSource source, long? supersedesEventId = null, string? note = null)
+        EventSource source, long? supersedesEventId = null, string? note = null, bool dateKnown = true)
     {
+        if (!dateKnown && source != EventSource.Import)
+            throw new ArgumentException("Only an imported event may have an unknown date.", nameof(dateKnown));
+
         if (supersedesEventId is not null && source != EventSource.Correction)
             throw new ArgumentException("An event that supersedes another must have source Correction.", nameof(source));
 
@@ -60,6 +70,6 @@ public sealed record StatusEvent
             throw new ArgumentException("A correction requires a note explaining it.", nameof(note));
 
         return new StatusEvent(id, applicationId, previousStatus, newStatus, effectiveAt, recordedAt,
-            source, supersedesEventId, note);
+            source, supersedesEventId, note, dateKnown);
     }
 }
