@@ -13,20 +13,27 @@ import re
 from datetime import date, datetime
 from pathlib import Path
 
-CONTRACT_VERSION = "1"
+CONTRACT_VERSION = "2"
 LANE = "synthetic"
 ALLOWED_FILES = {"applications.csv", "status_events.csv", "manifest.json"}
 SAFE_ID = re.compile(r"[a-z0-9][a-z0-9-]{2,63}")
 
-APPLICATION_COLUMNS = ["application_id", "company_name", "job_title", "date_applied",
-                       "expected_projected_status", "expected_is_no_reply"]
-APPLICATION_TYPES = ["int64", "string", "string", "date", "string", "int"]
+APPLICATION_COLUMNS = ["application_id", "company_name", "job_title", "date_applied", "job_type", "resume_variant",
+                       "priority", "referral_type", "location", "expected_projected_status", "expected_is_no_reply"]
+APPLICATION_TYPES = ["int64", "string", "string", "date", "string", "string", "string", "string", "string", "string", "int"]
 EVENT_COLUMNS = ["event_sequence", "application_id", "previous_status", "new_status", "effective_at",
                  "recorded_at", "source", "supersedes_event_sequence", "note"]
 EVENT_TYPES = ["int64", "int64", "string", "string", "timestamp_utc_us", "timestamp_utc_us", "string", "int64", "string"]
 
 STATUSES = {"NotStarted", "Applied", "InterviewScheduled", "Interviewed", "Rejected", "Withdrawn", "Accepted"}
 SOURCES = {"Manual", "Import", "Correction"}
+# Enum names of the app (src/JobTracker.Domain). A Python test reads the C# files to keep these in step.
+JOB_TYPES = {"DataAnalyst", "BiAnalyst", "BusinessAnalyst", "DataScientist", "MlAiEngineer", "DataEngineer",
+             "SoftwareEngineer", "NewGradProgram", "Other"}
+RESUME_VARIANTS = {"DataAnalytics", "BackendSwe", "BusinessIntelligence", "MlDataScience", "DataEngineering",
+                   "Automation", "FrontendSwe"}
+PRIORITIES = {"TopPriority", "MediumPriority", "LowPriority"}
+REFERRAL_TYPES = {"NetworkingContact", "ColdApply"}
 ALLOWED_NOTES = {"", "synthetic seed", "synthetic correction"}
 COMPANY = re.compile(r"Company \d{3}")
 TIMESTAMP = re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}Z")
@@ -67,6 +74,24 @@ def load_allowed_titles(generator_path: Path) -> set:
                 raise GuardError("TITLE_BY_TYPE holds no usable titles")
             return titles
     raise GuardError(f"TITLE_BY_TYPE not found in {generator_path}")
+
+
+def load_allowed_locations(generator_path: Path) -> set:
+    """Cities the synthetic generator can produce (its CITIES list). Read without importing it. Fails closed."""
+    try:
+        tree = ast.parse(Path(generator_path).read_text(encoding="utf-8"))
+    except (OSError, SyntaxError) as exc:
+        raise GuardError(f"Cannot read the city list from {generator_path}: {exc}") from exc
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "CITIES" for t in node.targets):
+            try:
+                value = ast.literal_eval(node.value)
+            except ValueError as exc:
+                raise GuardError("CITIES is not a plain literal") from exc
+            if not value or not all(isinstance(c, str) for c in value):
+                raise GuardError("CITIES holds no usable cities")
+            return set(value)
+    raise GuardError(f"CITIES not found in {generator_path}")
 
 
 def scan_free_text(value: str, label: str) -> None:
@@ -135,9 +160,10 @@ def _valid_timestamp(text: str, label: str) -> None:
         raise GuardError(f"{label} is not a real timestamp: {text!r}") from exc
 
 
-def _check_applications(rows: list, titles: set) -> set:
+def _check_applications(rows: list, titles: set, locations: set) -> set:
     ids = set()
-    for number, (app_id, company, title, applied, status, no_reply) in enumerate(rows, start=2):
+    for number, (app_id, company, title, applied, job_type, variant, priority, referral, location,
+                 status, no_reply) in enumerate(rows, start=2):
         where = f"applications.csv line {number}"
         if not INTEGER.fullmatch(app_id):
             raise GuardError(f"{where}: application_id is not a whole number")
@@ -151,6 +177,13 @@ def _check_applications(rows: list, titles: set) -> set:
         if title not in titles:
             raise GuardError(f"{where}: job_title {title!r} is not one of the synthetic generator's titles")
         _valid_date(applied, f"{where} date_applied")
+        for label, value, allowed in [("job_type", job_type, JOB_TYPES), ("resume_variant", variant, RESUME_VARIANTS),
+                                      ("priority", priority, PRIORITIES), ("referral_type", referral, REFERRAL_TYPES)]:
+            if value != "" and value not in allowed:
+                raise GuardError(f"{where}: unknown {label} {value!r}")
+        scan_free_text(location, f"{where} location")
+        if location != "" and location not in locations:
+            raise GuardError(f"{where}: location {location!r} is not one of the synthetic generator's cities")
         if status != "" and status not in STATUSES:
             raise GuardError(f"{where}: unknown expected_projected_status {status!r}")
         if no_reply not in ("0", "1"):
@@ -288,7 +321,8 @@ def validate_snapshot(folder, generator_path) -> dict:
             raise GuardError(f"{name} has {len(rows)} rows but the manifest says {entry['rows']}")
         parsed[name] = rows
 
-    app_ids = _check_applications(parsed["applications.csv"], load_allowed_titles(generator_path))
+    app_ids = _check_applications(parsed["applications.csv"], load_allowed_titles(generator_path),
+                              load_allowed_locations(generator_path))
     _check_events(parsed["status_events.csv"], app_ids)
 
     if manifest["applications"]["accepted"] != len(parsed["applications.csv"]):

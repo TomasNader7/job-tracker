@@ -16,7 +16,7 @@ SID = "snap-0123456789ab"
 
 def status_rows_for(apps_rows):
     """What the notebook would store: one row per application, status from the CSV's expected columns."""
-    return [[r[0], r[4] or None, r[5], "0", None] for r in apps_rows]
+    return [[r[0], r[9] or None, r[10], "0", None] for r in apps_rows]
 
 
 def manifest_with_real_hashes(folder):

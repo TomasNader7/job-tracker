@@ -87,7 +87,7 @@ class ManifestTests(GuardTestCase):
         self.assertRefused(self.edit(lambda m: m.update(lane="real")), "lane")
 
     def test_an_unknown_contract_version_is_refused(self):
-        self.assertRefused(self.edit(lambda m: m.update(contract_version="2")), "contract_version")
+        self.assertRefused(self.edit(lambda m: m.update(contract_version="3")), "contract_version")
 
     def test_an_unknown_manifest_field_is_refused(self):
         self.assertRefused(self.edit(lambda m: m.update(owner="someone")), "wrong fields")
@@ -329,3 +329,64 @@ class OAuthOnlyTests(GuardTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class OptionalFieldTests(GuardTestCase):
+    """Contract v2: job_type, resume_variant, priority, referral_type and location (columns 4 to 8)."""
+
+    def apps_with(self, index, value):
+        rows = fx.default_apps()
+        rows[0][index] = value
+        return fx.make_snapshot(self.root, apps=rows)
+
+    def test_empty_fields_are_allowed_because_null_is_empty(self):
+        rows = fx.default_apps()
+        for row in rows:
+            row[4:9] = [""] * 5
+
+        self.validate(fx.make_snapshot(self.root, apps=rows))
+
+    def test_every_allowed_value_passes(self):
+        for index, values in [(4, g.JOB_TYPES), (5, g.RESUME_VARIANTS), (6, g.PRIORITIES), (7, g.REFERRAL_TYPES)]:
+            for value in sorted(values):
+                with self.subTest(column=g.APPLICATION_COLUMNS[index], value=value):
+                    self.validate(self.apps_with(index, value))
+                    self.setUp()
+
+    def test_values_outside_the_allowed_sets_are_refused(self):
+        cases = [(4, "Data Analyst"), (4, "Astronaut"), (5, "Unspecified"), (5, "datanalytics"),
+                 (6, "Medium Priority"), (6, "Unspecified"), (7, "Referral"), (7, "coldapply")]
+        for index, bad in cases:
+            with self.subTest(column=g.APPLICATION_COLUMNS[index], value=bad):
+                with self.assertRaises(g.GuardError):
+                    self.validate(self.apps_with(index, bad))
+                self.setUp()
+
+    def test_the_allowed_enum_names_match_the_csharp_enums(self):
+        # Reads the C# source so the two lists cannot drift apart silently.
+        domain = Path(__file__).resolve().parents[2] / "src" / "JobTracker.Domain"
+        import re
+        for name, allowed in [("JobType", g.JOB_TYPES), ("ResumeVariant", g.RESUME_VARIANTS),
+                              ("Priority", g.PRIORITIES), ("ReferralType", g.REFERRAL_TYPES)]:
+            text = (domain / f"{name}.cs").read_text(encoding="utf-8")
+            body = text[text.index("{", text.index(f"enum {name}")) + 1:]
+            members = set(re.findall(r"^\s*(\w+)\s*(?:=\s*\d+)?\s*,?\s*(?://.*)?$", body.split("}")[0], re.MULTILINE))
+            with self.subTest(enum=name):
+                self.assertEqual(members, allowed)
+
+    def test_location_must_be_a_city_the_generator_can_produce(self):
+        self.validate(self.apps_with(8, "Seattle, WA"))
+        for bad in ["Austin", "Austin, TX ", "1600 Pennsylvania Ave, Washington, DC", "Springfield, IL", "remote (us)"]:
+            with self.subTest(location=bad):
+                self.setUp()
+                with self.assertRaises(g.GuardError):
+                    self.validate(self.apps_with(8, bad))
+
+    def test_location_with_an_email_is_refused_with_a_clear_reason(self):
+        self.assertRefused(self.apps_with(8, "me@example.com"), "email address")
+
+    def test_every_city_the_generator_can_produce_is_allowed(self):
+        cities = g.load_allowed_locations(fx.GENERATOR)
+
+        self.assertEqual(12, len(cities))
+        self.assertIn("Remote (US)", cities)

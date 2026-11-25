@@ -20,9 +20,11 @@ def ts(day, hour=0):
 
 def default_apps():
     return [
-        ["1", "Company 001", "Data Analyst", "2026-10-01", "Rejected", "0"],
-        ["2", "Company 002", "Data Engineer", "2026-10-02", "Applied", "1"],
-        ["3", "Company 003", "Data Scientist, New Grad", "2026-10-03", "Applied", "0"],
+        ["1", "Company 001", "Data Analyst", "2026-10-01", "DataAnalyst", "DataAnalytics", "MediumPriority",
+         "ColdApply", "Austin, TX", "Rejected", "0"],
+        ["2", "Company 002", "Data Engineer", "2026-10-02", "DataEngineer", "DataEngineering", "TopPriority",
+         "NetworkingContact", "Remote (US)", "Applied", "1"],
+        ["3", "Company 003", "Data Scientist, New Grad", "2026-10-03", "", "", "", "", "", "Applied", "0"],
     ]
 
 
@@ -47,7 +49,7 @@ def csv_bytes(header, rows):
 
 def default_manifest(snapshot_id, apps_bytes, events_bytes, n_apps, n_events):
     return {
-        "contract_version": "1",
+        "contract_version": "2",
         "lane": "synthetic",
         "snapshot_id": snapshot_id,
         "as_of": "2026-11-16T00:00:00.000000Z",
