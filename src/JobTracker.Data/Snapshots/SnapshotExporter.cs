@@ -65,7 +65,8 @@ public sealed class SnapshotExporter(string requiredDatabase = DemoDatabaseGuard
             foreach (var p in result.ProblemDetails) problemCounts[p.ContractCode]++;
 
             outcomes.Add(new AppOutcome(app.Id, result.Status, result.IsNoReply, result.ProblemDetails.Count, app.DateApplied,
-                result.FirstInterviewedAt is { } t ? DateOnly.FromDateTime(t.UtcDateTime) : null));
+                result.FirstInterviewedAt is { } t ? DateOnly.FromDateTime(t.UtcDateTime) : null,
+                app.JobType, app.ResumeVariant, app.Priority, app.ReferralType));
 
             applicationLines.Append(Csv.Line(
             [
@@ -102,9 +103,11 @@ public sealed class SnapshotExporter(string requiredDatabase = DemoDatabaseGuard
             $"{SnapshotFormat.ContractVersion}\n{asOfText}\n{applicationsHash}\n{eventsHash}")[..12];
 
         var measures = FunnelMeasures.Compute(outcomes);
+        var dimensionRows = DimensionFunnel.Compute(outcomes);
         var manifest = BuildManifest(snapshotId, asOfText, SnapshotFormat.Timestamp(options.ExportedAt),
             applicationsHash, eventsHash, accepted.Count, acceptedEvents.Count, noEvents, badPrecision, measures,
-            problemCounts, GoldHash.Sha256Hex(GoldHash.ApplicationStatusText(outcomes)), GoldHash.Sha256Hex(measures.HashText()));
+            problemCounts, GoldHash.Sha256Hex(GoldHash.ApplicationStatusText(outcomes)), GoldHash.Sha256Hex(measures.HashText()),
+            dimensionRows.Count, GoldHash.Sha256Hex(DimensionFunnel.HashText(dimensionRows)));
 
         var folder = Write(outputRoot, snapshotId, applicationsBytes, eventsBytes, manifest, out var alreadyExisted);
         return new ExportResult(snapshotId, folder, alreadyExisted, measures, accepted.Count, acceptedEvents.Count);
@@ -112,7 +115,8 @@ public sealed class SnapshotExporter(string requiredDatabase = DemoDatabaseGuard
 
     private static byte[] BuildManifest(string snapshotId, string asOf, string exportedAt, string applicationsHash,
         string eventsHash, int applicationRows, int eventRows, int noEvents, int badPrecision, FunnelMeasures m,
-        Dictionary<string, int> problemCounts, string goldStatusHash, string goldFunnelHash)
+        Dictionary<string, int> problemCounts, string goldStatusHash, string goldFunnelHash, int dimensionRows,
+        string goldDimensionHash)
     {
         static List<object> Columns(string[] names, string[] types) =>
             names.Select((n, i) => (object)new Dictionary<string, object?> { ["name"] = n, ["type"] = types[i] }).ToList();
@@ -167,6 +171,8 @@ public sealed class SnapshotExporter(string requiredDatabase = DemoDatabaseGuard
                 ["definition"] = "docs/snapshot-contract.md, section Canonical gold-content hash",
                 ["gold_application_status"] = goldStatusHash,
                 ["gold_funnel_summary"] = goldFunnelHash,
+                ["gold_funnel_by_dimension"] = goldDimensionHash,
+                ["gold_funnel_by_dimension_rows"] = dimensionRows,
             },
         };
 

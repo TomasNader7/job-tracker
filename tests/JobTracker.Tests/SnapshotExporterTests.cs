@@ -334,6 +334,20 @@ public sealed class SnapshotExporterTests : IDisposable
     }
 
     [Fact]
+    public void Manifest_carries_the_dimension_funnel_hash_and_row_count()
+    {
+        Seed();
+        var r = Export(TempRoot());
+        var gold = Manifest(r).GetProperty("gold_hash");
+
+        var hash = gold.GetProperty("gold_funnel_by_dimension").GetString()!;
+        Assert.Matches("^[0-9a-f]{64}$", hash);
+        // 9 job types + 7 resume variants + 4 priorities + 2 referral types, as far as the 182 synthetic rows use them.
+        var rows = gold.GetProperty("gold_funnel_by_dimension_rows").GetInt32();
+        Assert.InRange(rows, 15, 22);
+    }
+
+    [Fact]
     public void Manifest_describes_the_files_it_ships_with()
     {
         Seed();

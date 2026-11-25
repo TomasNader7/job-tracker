@@ -7,7 +7,8 @@ namespace JobTracker.Data.Snapshots;
 
 /// <summary>What the projection says about one application, as far as the snapshot cares.</summary>
 public sealed record AppOutcome(int ApplicationId, ApplicationStatus? Status, bool IsNoReply, int ProblemCount,
-    DateOnly DateApplied, DateOnly? InterviewDate);
+    DateOnly DateApplied, DateOnly? InterviewDate, JobType? JobType = null, ResumeVariant? ResumeVariant = null,
+    Priority? Priority = null, ReferralType? ReferralType = null);
 
 /// <summary>
 /// The funnel numbers, defined exactly as in the snapshot contract. Rates and the average are exact decimals,
